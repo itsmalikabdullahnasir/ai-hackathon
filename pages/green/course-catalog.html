@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>atomlearn - Course Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Sora', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-tint": "#006e2f",
+                "error": "#ba1a1a",
+                "surface-container-lowest": "#ffffff",
+                "inverse-primary": "#4ae176",
+                "on-primary-fixed": "#002109",
+                "primary-container": "#22c55e",
+                "on-secondary-container": "#5c647a",
+                "surface-container": "#eceef0",
+                "on-primary-fixed-variant": "#005321",
+                "tertiary-fixed": "#d3e4fe",
+                "surface": "#f7f9fb",
+                "on-error": "#ffffff",
+                "on-primary": "#ffffff",
+                "on-tertiary-container": "#314156",
+                "surface-container-low": "#f2f4f6",
+                "tertiary-fixed-dim": "#b7c8e1",
+                "surface-dim": "#d8dadc",
+                "primary": "#006e2f",
+                "on-tertiary-fixed-variant": "#38485d",
+                "on-secondary": "#ffffff",
+                "secondary-fixed-dim": "#bec6e0",
+                "on-primary-container": "#004b1e",
+                "outline-variant": "#bccbb9",
+                "primary-fixed": "#6bff8f",
+                "inverse-surface": "#2d3133",
+                "on-surface": "#191c1e",
+                "secondary-fixed": "#dae2fd",
+                "background": "#f7f9fb",
+                "secondary": "#565e74",
+                "on-tertiary": "#ffffff",
+                "tertiary-container": "#9dadc6",
+                "surface-container-highest": "#e0e3e5",
+                "tertiary": "#505f76",
+                "primary-fixed-dim": "#4ae176",
+                "on-tertiary-fixed": "#0b1c30",
+                "secondary-container": "#dae2fd",
+                "on-secondary-fixed": "#131b2e",
+                "surface-variant": "#e0e3e5",
+                "surface-container-high": "#e6e8ea",
+                "error-container": "#ffdad6",
+                "on-error-container": "#93000a",
+                "outline": "#6d7b6c",
+                "inverse-on-surface": "#eff1f3",
+                "on-background": "#191c1e",
+                "surface-bright": "#f7f9fb",
+                "on-secondary-fixed-variant": "#3f465c",
+                "on-surface-variant": "#3d4a3d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit-xs": "0.25rem",
+                      "sidebar-width": "280px",
+                      "unit-sm": "0.5rem",
+                      "unit-xl": "2.5rem",
+                      "margin-desktop": "2rem",
+                      "unit-md": "1rem",
+                      "gutter": "1.5rem",
+                      "container-max": "1440px",
+                      "unit-lg": "1.5rem",
+                      "margin-mobile": "1rem"
+              },
+              "fontFamily": {
+                      "display-md": ["Sora"],
+                      "body-sm": ["DM Sans"],
+                      "display-lg": ["Sora"],
+                      "label-md": ["DM Sans"],
+                      "body-lg": ["DM Sans"],
+                      "headline-md": ["Sora"],
+                      "body-md": ["DM Sans"],
+                      "headline-sm": ["Sora"],
+                      "headline-lg": ["Sora"],
+                      "label-sm": ["DM Sans"],
+                      "headline-lg-mobile": ["Sora"],
+                      "display-lg-mobile": ["Sora"]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar (Shared Component) -->
+<aside class="flex flex-col h-screen fixed left-0 top-0 z-40 py-unit-lg bg-inverse-surface w-sidebar-width shadow-sm">
+<div class="px-unit-lg mb-unit-xl">
+<h1 class="font-display-md text-headline-md font-bold text-surface-bright">atomlearn</h1>
+<p class="font-body-md text-body-md text-surface-variant/70">Smart Adaptive LMS</p>
+</div>
+<nav class="flex-1 space-y-unit-sm">
+<!-- Dashboard Tab -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<!-- Courses Tab (ACTIVE) -->
+<a class="bg-primary/10 text-primary-fixed border-l-4 border-primary-fixed px-unit-lg py-unit-md flex items-center gap-unit-sm transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-body-md text-body-md">Courses</span>
+</a>
+<!-- AI Tutor Tab -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-body-md text-body-md">AI Tutor</span>
+</a>
+<!-- My Progress Tab -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">My Progress</span>
+</a>
+<!-- Instructor Tab -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-body-md text-body-md">Instructor</span>
+</a>
+<!-- Settings Tab -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-unit-lg border-t border-surface-variant/10 pt-unit-lg">
+<a class="text-surface-variant flex items-center gap-unit-sm hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md text-body-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar & Main Canvas -->
+<div class="ml-sidebar-width flex flex-col min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 z-30 bg-surface shadow-sm sticky top-0">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 font-body-md text-on-surface" placeholder="Search for courses, paths, or instructors..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-unit-lg">
+<button class="text-on-surface-variant hover:text-primary transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border-2 border-surface-container">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8sIEiwp26LpHMKZ3KL9W7pFFBJxtLNP3zmsxLYskZuv_XELQLP52d41ttEOCJsnetgmO-KV9JjLfzYznszCx0wlIC16OJ4a_pJxVY3c05a0MCDn5MGwLcRNrur4bvL4Qrw5hFpWlL2WsfGJnZ8qwUKSrlZ_afJXPretFxBLFk6kAED4w5ktUHSUTZ573Argh8K8OX9PaXW-7tV9s4QjIgOu9jEb4vczbGZjwoG-2pIDHD7C6cw6SrkuwtsfZRPs7NfmW4sbFsFqU"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 p-margin-desktop max-w-container-max mx-auto w-full">
+<!-- Page Header & Filter Pills -->
+<div class="mb-unit-xl">
+<h2 class="font-display-md text-headline-lg text-on-surface mb-unit-md">Course Catalog</h2>
+<div class="flex flex-wrap gap-unit-sm">
+<button class="px-unit-lg py-unit-sm bg-primary text-on-primary font-label-md rounded-full active:scale-95 transition-transform">All</button>
+<button class="px-unit-lg py-unit-sm bg-surface-container-highest text-on-surface-variant font-label-md rounded-full hover:bg-surface-container-low active:scale-95 transition-transform">Beginner</button>
+<button class="px-unit-lg py-unit-sm bg-surface-container-highest text-on-surface-variant font-label-md rounded-full hover:bg-surface-container-low active:scale-95 transition-transform">Intermediate</button>
+<button class="px-unit-lg py-unit-sm bg-surface-container-highest text-on-surface-variant font-label-md rounded-full hover:bg-surface-container-low active:scale-95 transition-transform">Advanced</button>
+<button class="px-unit-lg py-unit-sm bg-surface-container-highest text-on-surface-variant font-label-md rounded-full hover:bg-surface-container-low active:scale-95 transition-transform">Free</button>
+<button class="px-unit-lg py-unit-sm bg-surface-container-highest text-on-surface-variant font-label-md rounded-full hover:bg-surface-container-low active:scale-95 transition-transform">Enrolled</button>
+</div>
+</div>
+<!-- Bento-style Grid of Course Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1: Data Analytics Bootcamp -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow">
+<div class="relative h-48 bg-secondary-container">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist digital graphic representing data analytics, featuring soft-lit floating holographic bar charts and abstract nodes against a light navy and white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj_CkM5Wdl_qcHfXocuSU6kJF_-AFmtBCzEZZlt9iCk6kXn1CV74YfW6DEVezWq6_9LEWslVLb-LOezhiwKsIi7BvonMCdBJmyk_7Mjb7feN6JljmBThFwO9QI8CUFeKXkEjTC1K3ejsMbhAFy0WSukDiur8zt1YuLb3uVUnH61GNTvW1kS5KPCUqQmylQxr1zyETSH-ZxASBR5o61UhaECGJHMuDsQaYD4gBzmuShFtG1y5lDUCUJ3_ejbBihULHOhjQ7z3tzt7k"/>
+<div class="absolute top-unit-md left-unit-md">
+<span class="px-2 py-1 bg-surface-bright/90 text-on-surface-variant font-label-sm rounded-lg backdrop-blur-sm">Beginner</span>
+</div>
+</div>
+<div class="p-unit-lg flex-1 flex flex-col">
+<h3 class="font-headline-sm text-on-surface mb-unit-xs group-hover:text-primary transition-colors">Data Analytics Bootcamp</h3>
+<div class="flex items-center gap-unit-xs mb-unit-md">
+<img alt="Instructor Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCNzmOrqn8d_3MnXKJ2-WJELHa1-SIRU3_P7f7mpYAxiT3FJ_meBcH43pC_NBAoqG-7pqO7qDUKt5HbEdl43b5h0i3z-3FESitcCnLcy2u9XseWoyOQ0M_9R0CqW6DvjHSNrO5lRFw-hMPo7P14Z48ht_dyNhG3y3-qUaOSxOIUcNx64cW2gxM18Xc-kPYRciHb4HDY2dwRgtb_CNNjMfdk-M_q9GHoMk1yRA2-Lpn00R5J-XZB8R_fD39pXpaEU3_6iZWSMo47dY"/>
+<span class="font-label-sm text-on-surface-variant">Dr. Sarah Jenkins</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm mb-unit-lg">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+                                12 weeks
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="layers">layers</span>
+                                48 modules
+                            </div>
+</div>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-unit-md">
+<span class="font-headline-md text-on-surface">PKR 50,000</span>
+</div>
+<button class="w-full py-3 bg-primary text-on-primary font-label-md rounded-lg hover:bg-primary-container transition-colors active:scale-95">Enroll Now</button>
+</div>
+</div>
+</div>
+<!-- Card 2: AI Bootcamp -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow">
+<div class="relative h-48 bg-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A futuristic AI-themed illustration with a stylized glowing brain network." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB235JMTyx7i_fO8l01NpFllTGMRf4A18R0wasHmdNZQ4xRe3a7fcTKCXVCGB7C2wiGtQWCz_KjlrH-iDts-i5ygt6tUUcRGB66Gi8EvF4-MXGOQFqI0I8G8buJLcbl1YgEH12vLbQp_sHVBHC259bc7NHHGSOC2R9E74aNIqE4QAwnSOURtjNA6GDTNyfDxaQ17za9JIoDN1VMrI0zhzIpC6U65gjDfXaQ4WGk7kv6SQJXxnepX2NlEc9l63wycr-Q_bG2o8iHP0U"/>
+<div class="absolute top-unit-md left-unit-md">
+<span class="px-2 py-1 bg-surface-bright/90 text-on-surface-variant font-label-sm rounded-lg backdrop-blur-sm">Intermediate</span>
+</div>
+<div class="absolute bottom-unit-md right-unit-md">
+<span class="px-2 py-1 bg-tertiary-container/10 text-primary font-label-sm rounded-lg backdrop-blur-sm">In Progress</span>
+</div>
+</div>
+<div class="p-unit-lg flex-1 flex flex-col">
+<h3 class="font-headline-sm text-on-surface mb-unit-xs group-hover:text-primary transition-colors">AI Bootcamp</h3>
+<div class="flex items-center gap-unit-xs mb-unit-md">
+<img alt="Instructor Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD7fqIcq_py4_V5t4AbGSZqfh7kBZbKGfBqfa-owzmyuVa6EavCFeYu1Lr9v6MRkPsG3_0h9oSrrq2cIBKJpbZNFiqMrmcyyCqLTzLmzEaC5Ppaxc6JsPq6lzvaDgM7MnjJJJKTMk0Y8IYBnVbAKyBqPHVanRVEttNmBiBgP4oXxKbR8xX7-DXcNJH9XDjBVUX-PoXHK19uC_sOmfRCZ0klOTejWZgiZiBszHHEZE1Ke8__NpVaYHUMaQm-QM5iEW12TRYoY0pj0A"/>
+<span class="font-label-sm text-on-surface-variant">Prof. Alex Rivera</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm mb-unit-sm">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+                                14 weeks
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="layers">layers</span>
+                                56 modules
+                            </div>
+</div>
+<!-- Progress bar for enrolled -->
+<div class="mb-unit-lg">
+<div class="flex justify-between font-label-sm text-on-surface-variant mb-1">
+<span>Progress</span>
+<span>65%</span>
+</div>
+<div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 65%"></div>
+</div>
+</div>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-unit-md">
+<span class="font-headline-md text-on-surface">PKR 75,000</span>
+</div>
+<button class="w-full py-3 border-2 border-on-surface text-on-surface font-label-md rounded-lg hover:bg-on-surface hover:text-surface transition-all active:scale-95">Continue Learning</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Automation with AI Bootcamp -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow">
+<div class="relative h-48 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A professional visualization of workflow automation showing interlocking cogwheels and digital circuit patterns." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuz_o-u--bULU1cxUwNSKDFdg2TNxVKPJsq6Enoor5L-qV5CvWkYEygShqSoZryKJ5Z87jmLv3EwOd3X7LJloPVOBj-s0soNDE0FkqDxyP_oq2j3IylUl2R4mOLtYQCpSyi72gENy988j1D2WPc9wVH0gwIqffWrerh3kYwFYUd8ftnwZ9SJBzqhNkQzGrEFb8RehZ9oeo-MoYGqSJf8gpEjC3cbGql2zpJAci51ZJbUgprMasZBzJmLC_1pXgjUG0aYsBjf6H5qk"/>
+<div class="absolute top-unit-md left-unit-md">
+<span class="px-2 py-1 bg-surface-bright/90 text-on-surface-variant font-label-sm rounded-lg backdrop-blur-sm">Intermediate</span>
+</div>
+</div>
+<div class="p-unit-lg flex-1 flex flex-col">
+<h3 class="font-headline-sm text-on-surface mb-unit-xs group-hover:text-primary transition-colors">Automation with AI Bootcamp</h3>
+<div class="flex items-center gap-unit-xs mb-unit-md">
+<img alt="Instructor Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeR4nlCXi093Z5gBmUwFizBr7m10fa1p-BfQ0wN1OF5M3X1hVXaiI37jFkytbSuQRMCWEhKQiMi3C-yjv4wyUM1ryKdyKaf9o4nmu-ZhwSGIk1t2WBnygT6X96EwVFstoU9wCUO9E9NaUNUp_g9ty9X8JTCac3ivdnl2zbg4pz1sIFmu9hKMfx7Lz8b5IsXoKxWbjqh9AFpHQiswh8pZ8x5v5hGUZdpsrIuKMkL8yRK1XwiC98MiVaidUrY3UiVNA1yr5NsBOWw7w"/>
+<span class="font-label-sm text-on-surface-variant">James Wilson</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm mb-unit-lg">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+                                6 weeks
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="layers">layers</span>
+                                24 modules
+                            </div>
+</div>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-unit-md">
+<span class="font-headline-md text-on-surface">PKR 35,000</span>
+</div>
+<button class="w-full py-3 bg-primary text-on-primary font-label-md rounded-lg hover:bg-primary-container transition-colors active:scale-95">Enroll Now</button>
+</div>
+</div>
+</div>
+<!-- Card 4: AI Agents for Business -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow">
+<div class="relative h-48 bg-inverse-surface">
+<img class="w-full h-full object-cover" data-alt="A sophisticated representation of multiple digital autonomous agents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDeVxW983_pDOtmuZDu0I8TnHwX3y5N2LHb5pO9KlSBPa_P9k_OeQ3hrfZwdrLzG4ukknDOvTDM-rTGl54DBXe6Hd9T6VfmLkT1YOCfFOW0aCO6XdonOf0GNGN2nxa9V5jZCCWxV3qfZb3mppo2zQw2trDgKHiDMjmbil69a6o4i-OA4uQjQ4DI4y-Wgffta63zWKffhFrpyHvinJpfV-Lrd0xfMMBI_sfGfWt9PAhNGH7otLgqDc9in9Rbl8oz_nzQtQ_pMkvpcc"/>
+<div class="absolute top-unit-md left-unit-md">
+<span class="px-2 py-1 bg-surface-bright/90 text-on-surface-variant font-label-sm rounded-lg backdrop-blur-sm">Advanced</span>
+</div>
+</div>
+<div class="p-unit-lg flex-1 flex flex-col">
+<h3 class="font-headline-sm text-on-surface mb-unit-xs group-hover:text-primary transition-colors">AI Agents for Business</h3>
+<div class="flex items-center gap-unit-xs mb-unit-md">
+<img alt="Instructor Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-wdI9K2BOxBpKPeR2WqORcGMCDE41VgS7egUcJf-rHOpc3lg6OPWaD3q8lg5ZliVsdfZTax7EfUi7O3kdhtQqrcZXXlYATyypEw5VGuCDAHYF-Fw403XwxRnkjyB9-Ivbb2_CVFo7OpxCt52QEYek56ylsRhjyUUGk7sFaJsVnf0idPngLxjYJMFmxRxFkGdabuaObfQlC3ioEk9IvXDH0yPSoKj6o3YALeMAmuJ36bcEyP3xXU7d1S4E1pTy-FfIeizgZu2mlAU"/>
+<span class="font-label-sm text-on-surface-variant">Maria Rodriguez</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm mb-unit-lg">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+                                8 weeks
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="layers">layers</span>
+                                32 modules
+                            </div>
+</div>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-unit-md">
+<span class="font-headline-md text-on-surface">PKR 60,000</span>
+</div>
+<button class="w-full py-3 bg-primary text-on-primary font-label-md rounded-lg hover:bg-primary-container transition-colors active:scale-95">Enroll Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Recommendation Section -->
+<section class="mt-unit-xl bg-surface-container rounded-xl p-unit-xl flex flex-col md:flex-row items-center gap-unit-xl">
+<div class="flex-1">
+<h2 class="font-headline-lg text-on-surface mb-unit-sm">Not sure where to start?</h2>
+<p class="font-body-lg text-on-surface-variant mb-unit-lg">Let our Smart AI Tutor analyze your goals and recommend the perfect path for you.</p>
+<button class="flex items-center gap-unit-sm px-unit-xl py-unit-md bg-inverse-surface text-surface font-label-md rounded-lg hover:bg-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+                        Start AI Assessment
+                    </button>
+</div>
+<div class="w-full md:w-1/3 aspect-video rounded-lg overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A futuristic and welcoming AI interface displaying personalized learning paths." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxUxGbKRHuQvKROhXJB95QbP-C2_9oW0ht-Zah6KZMi6tYDov05S7q7z5LYZmvN9BkAsS2UOemRDKhrLlYCOZijyoQvSqbb1bIVBs8bJIB82Ysk65B93h2eoR9gGiky2Hr2ruSv_TiL_XYg413fF16yrlAIL10UjZOKzRDgBaFOt5PKpv3g4AEnI2nQeeeLG0ZjUW2FGgjMzlPmFidB39glg-dvK43RHkcg_maMmtYMby3BjtkR878w85uqdHgj7CAbizE8XruSFo"/>
+</div>
+</section>
+</main>
+</div>
+</body></html>

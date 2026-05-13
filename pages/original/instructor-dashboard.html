@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#0b1c30",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "on-tertiary-container": "#f7fff3",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary-fixed": "#6bff8f",
+                    "tertiary": "#006b2d",
+                    "on-secondary-container": "#5c647a",
+                    "on-secondary-fixed": "#131b2e",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-primary": "#ffb59e",
+                    "surface-variant": "#d3e4fe",
+                    "tertiary-container": "#00873b",
+                    "outline": "#8e7067",
+                    "primary": "#a93200",
+                    "primary-fixed": "#ffdbd0",
+                    "primary-fixed-dim": "#ffb59e",
+                    "secondary-container": "#dae2fd",
+                    "inverse-surface": "#213145",
+                    "surface-container-high": "#dce9ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#002109",
+                    "inverse-on-surface": "#eaf1ff",
+                    "primary-container": "#d24206",
+                    "outline-variant": "#e3bfb4",
+                    "surface-tint": "#ad3300",
+                    "on-surface-variant": "#5a4139",
+                    "on-background": "#0b1c30",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f8f9ff",
+                    "on-primary-container": "#fffbff",
+                    "on-primary": "#ffffff",
+                    "surface": "#f8f9ff",
+                    "on-error-container": "#93000a",
+                    "secondary": "#565e74",
+                    "surface-container": "#e5eeff",
+                    "surface-dim": "#cbdbf5",
+                    "tertiary-fixed-dim": "#4ae176",
+                    "on-tertiary-fixed-variant": "#005321",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary-fixed": "#390b00",
+                    "on-primary-fixed-variant": "#842500",
+                    "secondary-fixed": "#dae2fd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit-xs": "0.25rem",
+                    "sidebar-width": "280px",
+                    "unit-sm": "0.5rem",
+                    "unit-xl": "2.5rem",
+                    "margin-desktop": "2rem",
+                    "unit-md": "1rem",
+                    "gutter": "1.5rem",
+                    "container-max": "1440px",
+                    "unit-lg": "1.5rem",
+                    "margin-mobile": "1rem"
+            },
+            "fontFamily": {
+                    "display-md": ["Sora"],
+                    "body-sm": ["DM Sans"],
+                    "display-lg": ["Sora"],
+                    "label-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "headline-md": ["Sora"],
+                    "body-md": ["DM Sans"],
+                    "headline-sm": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "label-sm": ["DM Sans"],
+                    "headline-lg-mobile": ["Sora"],
+                    "display-lg-mobile": ["Sora"]
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'DM Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar -->
+<aside class="flex flex-col h-screen fixed left-0 top-0 z-40 py-unit-lg bg-on-surface w-sidebar-width shadow-sm">
+<div class="px-unit-lg mb-unit-xl">
+<h1 class="font-display-md text-headline-md font-bold text-surface-bright">atomlearn</h1>
+<p class="text-surface-variant font-body-md text-body-md opacity-70">Smart Adaptive LMS</p>
+</div>
+<nav class="flex-1 space-y-unit-xs">
+<!-- Dashboard -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:bg-on-secondary-fixed-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<!-- Courses -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:bg-on-secondary-fixed-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-body-md text-body-md">Courses</span>
+</a>
+<!-- AI Tutor -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:bg-on-secondary-fixed-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-body-md text-body-md">AI Tutor</span>
+</a>
+<!-- My Progress -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:bg-on-secondary-fixed-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">My Progress</span>
+</a>
+<!-- Instructor (Active) -->
+<a class="bg-primary/10 text-primary border-l-4 border-primary px-unit-lg py-unit-md flex items-center gap-unit-sm transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+<span class="font-body-md text-body-md">Instructor</span>
+</a>
+<!-- Settings -->
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:bg-on-secondary-fixed-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-unit-lg">
+<a class="text-surface-variant px-unit-lg py-unit-md flex items-center gap-unit-sm hover:bg-on-secondary-fixed-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md text-body-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 z-30 bg-surface shadow-sm sticky top-0">
+<div class="flex items-center gap-unit-lg">
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border-none rounded-lg px-unit-md py-unit-sm pr-10 text-on-surface font-body-md focus:ring-2 focus:ring-primary">
+<option>Cohort: Advanced UI/UX Design (2024-Q3)</option>
+<option>Cohort: Interaction Design Fundamentals</option>
+<option>Cohort: AI-Driven Design Systems</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-unit-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-unit-xs">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-unit-xs">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-unit-xs">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden ml-unit-sm ring-2 ring-primary-fixed">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3WPkZgUahr92TLy_mX2OUVvDvArYkKDdzjrj0YfsXBEDOQCLpfs6GxJISplzBonU3-ToFfuvclBJlmr0fFD8wFiROyoMdsmBE4TmCSorsLIhtELkuuhwQsw9ovdjOXKAnHjBpeMPgGFPe9ZPh63WdcEmFK2y5VGsubQSRiaAb-QDNlTWkyCCHObZdkNZfW2gCg8fJacBrTIu-3icpIhokHBD9kBRBI1qWANx6PptZaNKjWGPuwyNNwf1V0lnHEnjPoSGsoyklBkc"/>
+</div>
+</div>
+</header>
+<div class="p-margin-desktop space-y-gutter max-w-container-max mx-auto">
+<!-- Row 1: High-level stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl shadow-sm border border-surface-container">
+<div class="flex justify-between items-start mb-unit-sm">
+<span class="text-on-surface-variant font-label-md">Total Students</span>
+<span class="material-symbols-outlined text-primary" data-icon="groups">groups</span>
+</div>
+<div class="text-display-md font-bold text-on-surface">1,284</div>
+<div class="text-tertiary font-label-sm mt-unit-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span> +12% this month
+                    </div>
+</div>
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl shadow-sm border border-surface-container">
+<div class="flex justify-between items-start mb-unit-sm">
+<span class="text-on-surface-variant font-label-md">Completion Rate</span>
+<span class="material-symbols-outlined text-primary" data-icon="task_alt">task_alt</span>
+</div>
+<div class="text-display-md font-bold text-on-surface">84.2%</div>
+<div class="w-full bg-surface-container rounded-full h-2 mt-unit-md">
+<div class="bg-tertiary h-2 rounded-full" style="width: 84%"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl shadow-sm border border-surface-container ring-2 ring-error/10">
+<div class="flex justify-between items-start mb-unit-sm">
+<span class="text-on-surface-variant font-label-md">At-Risk Students</span>
+<span class="material-symbols-outlined text-error" data-icon="report" style="font-variation-settings: 'FILL' 1;">report</span>
+</div>
+<div class="text-display-md font-bold text-error">12</div>
+<div class="text-error font-label-sm mt-unit-xs">Immediate attention required</div>
+</div>
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl shadow-sm border border-surface-container">
+<div class="flex justify-between items-start mb-unit-sm">
+<span class="text-on-surface-variant font-label-md">Avg Quiz Score</span>
+<span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
+</div>
+<div class="text-display-md font-bold text-on-surface">78.5</div>
+<div class="text-on-surface-variant font-label-sm mt-unit-xs">Target: 80.0</div>
+</div>
+</div>
+<!-- Row 2: Charts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl shadow-sm border border-surface-container">
+<h3 class="font-headline-sm text-on-surface mb-unit-lg">Cohort Completion Over Time</h3>
+<div class="h-64 flex items-end justify-between gap-2 px-unit-sm">
+<!-- Mock Line Chart Representation -->
+<div class="relative w-full h-full bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] rounded-lg">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,80 Q25,70 50,40 T100,10" fill="none" stroke="#a93200" stroke-linecap="round" stroke-width="3"></path>
+<circle cx="0" cy="80" fill="#a93200" r="4"></circle>
+<circle cx="50" cy="40" fill="#a93200" r="4"></circle>
+<circle cx="100" cy="10" fill="#a93200" r="4"></circle>
+</svg>
+<div class="absolute bottom-0 left-0 right-0 flex justify-between text-label-sm text-on-surface-variant pt-2">
+<span>Week 1</span><span>Week 4</span><span>Week 8</span><span>Week 12</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl shadow-sm border border-surface-container">
+<h3 class="font-headline-sm text-on-surface mb-unit-lg">Module Drop-off Heatmap</h3>
+<div class="space-y-unit-md">
+<div class="space-y-unit-xs">
+<div class="flex justify-between text-label-md">
+<span class="text-on-surface">M1: Intro to Design Systems</span>
+<span class="font-bold">98% Retention</span>
+</div>
+<div class="h-4 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container w-[98%]"></div>
+</div>
+</div>
+<div class="space-y-unit-xs">
+<div class="flex justify-between text-label-md">
+<span class="text-on-surface">M2: Token Architectures</span>
+<span class="font-bold">92% Retention</span>
+</div>
+<div class="h-4 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container w-[92%]"></div>
+</div>
+</div>
+<div class="space-y-unit-xs">
+<div class="flex justify-between text-label-md">
+<span class="text-on-surface">M3: Complex Component Logic</span>
+<span class="font-bold text-error">64% Retention</span>
+</div>
+<div class="h-4 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error w-[64%]"></div>
+</div>
+</div>
+<div class="space-y-unit-xs">
+<div class="flex justify-between text-label-md">
+<span class="text-on-surface">M4: Documentation &amp; Handoff</span>
+<span class="font-bold">81% Retention</span>
+</div>
+<div class="h-4 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[81%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 3: At-Risk Students Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container overflow-hidden">
+<div class="p-unit-lg border-b border-surface-container flex justify-between items-center">
+<h3 class="font-headline-sm text-on-surface">At-Risk Students</h3>
+<button class="text-primary font-label-md hover:underline">Export Full List</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-on-surface-variant font-label-md">
+<tr>
+<th class="px-unit-lg py-unit-md">Student</th>
+<th class="px-unit-lg py-unit-md">Progress</th>
+<th class="px-unit-lg py-unit-md">Last Active</th>
+<th class="px-unit-lg py-unit-md">Risk Score</th>
+<th class="px-unit-lg py-unit-md">Reason</th>
+<th class="px-unit-lg py-unit-md">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container font-body-md">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-unit-lg py-unit-md">
+<div class="flex items-center gap-unit-md">
+<img alt="Student Avatar" class="w-10 h-10 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZQxgctfRR0ahy8GE5ER2lrnHaYlwBCtrUmeSkn-HN8J7vIIZiGaK-_ZxRPaspmFpvsP3rKQTNxphO8Mx-N7CgBQThdfWgmtbqfu6zG-J9etdQz31OGNke1n0ugWxXczyRkeZVXnMPg5rUQ5Vj2WSH9NnOg6n4awn_vXStE71OHPXRt-g598a3f4yeHpPTB7SMQxR0mN0mc9t4NGoXdlug-NAIdANE7wU8L2ZC-d1Keos6zMcx6LRtk-6ijtDzWjpzvfZSVI3B79E"/>
+<div>
+<div class="font-bold text-on-surface">Sarah Jenkins</div>
+<div class="text-label-sm text-on-surface-variant">sj@example.com</div>
+</div>
+</div>
+</td>
+<td class="px-unit-lg py-unit-md">
+<div class="flex items-center gap-2">
+<div class="w-16 bg-surface-container rounded-full h-1.5">
+<div class="bg-error h-1.5 rounded-full" style="width: 24%"></div>
+</div>
+<span class="text-label-sm">24%</span>
+</div>
+</td>
+<td class="px-unit-lg py-unit-md text-on-surface-variant">5 days ago</td>
+<td class="px-unit-lg py-unit-md">
+<span class="bg-error-container text-on-error-container px-unit-sm py-1 rounded-full text-label-sm font-bold uppercase tracking-wider">High</span>
+</td>
+<td class="px-unit-lg py-unit-md text-on-surface-variant">Consecutive Quiz Failure</td>
+<td class="px-unit-lg py-unit-md">
+<button class="bg-primary text-on-primary px-unit-md py-1.5 rounded-lg text-label-md hover:bg-primary-container transition-all">Intervene</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-unit-lg py-unit-md">
+<div class="flex items-center gap-unit-md">
+<img alt="Student Avatar" class="w-10 h-10 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQSdmbI5a47kX0UKZKZKD_hNSNZdUWxrj1MRobL_tUvPNJHJiDmmyURQnb65swLmTX-9EYtSK_aC9IaRkp679aU2MsYvj6Kt9BYBHz1UUh9hTc5ng6OifNUeynIAHjA6ZtXGpUzRHz4h03YCumiTDodDoMdYQc5Oy-hpcgVw1wfWjC7srG0D2NtBdQdcq7ki0TGnQqJfbX4BQlGmQu-_2PzUxojVintcFG4DfZEfL_ugvIdPapZdGKXe2izDpfDQHMhXVCxElcTP8"/>
+<div>
+<div class="font-bold text-on-surface">Marcus Thorne</div>
+<div class="text-label-sm text-on-surface-variant">m.thorne@example.com</div>
+</div>
+</div>
+</td>
+<td class="px-unit-lg py-unit-md">
+<div class="flex items-center gap-2">
+<div class="w-16 bg-surface-container rounded-full h-1.5">
+<div class="bg-error h-1.5 rounded-full" style="width: 12%"></div>
+</div>
+<span class="text-label-sm">12%</span>
+</div>
+</td>
+<td class="px-unit-lg py-unit-md text-on-surface-variant">9 days ago</td>
+<td class="px-unit-lg py-unit-md">
+<span class="bg-error-container text-on-error-container px-unit-sm py-1 rounded-full text-label-sm font-bold uppercase tracking-wider">High</span>
+</td>
+<td class="px-unit-lg py-unit-md text-on-surface-variant">Extended Inactivity</td>
+<td class="px-unit-lg py-unit-md">
+<button class="bg-primary text-on-primary px-unit-md py-1.5 rounded-lg text-label-md hover:bg-primary-container transition-all">Intervene</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Row 4: AI Recommendations -->
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl border-2 border-primary-fixed shadow-sm">
+<div class="flex items-center gap-unit-md mb-unit-md">
+<div class="bg-primary-fixed p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-on-surface">AI Recommendations for Instructor</h3>
+<p class="text-on-surface-variant font-body-sm">Insights based on current cohort trajectory</p>
+</div>
+</div>
+<ul class="grid grid-cols-1 md:grid-cols-2 gap-unit-lg">
+<li class="flex gap-unit-sm items-start p-unit-md bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="lightbulb">lightbulb</span>
+<div>
+<span class="font-bold block text-on-surface">Topic Re-intervention Needed</span>
+<span class="text-body-sm text-on-surface-variant">64% of students struggled with "Complex Component Logic". Schedule a live Q&amp;A session for Module 3.</span>
+</div>
+</li>
+<li class="flex gap-unit-sm items-start p-unit-md bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="assignment_late">assignment_late</span>
+<div>
+<span class="font-bold block text-on-surface">Engagement Dip Detected</span>
+<span class="text-body-sm text-on-surface-variant">Active users dropped by 15% after the weekend. Consider sending a motivational announcement to boost morale.</span>
+</div>
+</li>
+</ul>
+</div>
+<!-- Row 5: Expanded drill-down -->
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl shadow-sm border border-surface-container">
+<div class="flex items-center justify-between mb-unit-xl">
+<div class="flex items-center gap-unit-md">
+<img alt="Sarah Jenkins Drilldown" class="w-12 h-12 rounded-full border-2 border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAsEi5chcgRgOOTizFb-T5kAPcWYfaHZgid8teS-6hiCfdXvcH1W1zKyAV8bt78xaUqfmDgcTzA4USW2isdjLCJgHxUa5ABXVyBaNC_eSvYWU04nEufO_WcuepKpIe1JDFghgGCB9TTwNtczYBQoG9kWnXZ9aQljiocq8euNsmmau4inoSHMXwsLiA7rmh-Zubqevn1DkCjyPGaHVg4fgutsigmgy7vkua8fVjLbQZTtmn_OGUlzUqNVp6tALtH2gsEzwr8ihwQWA"/>
+<div>
+<h4 class="font-headline-sm text-on-surface">Student Drill-down: Sarah Jenkins</h4>
+<p class="text-on-surface-variant font-body-sm">AI-Generated Profile Summary</p>
+</div>
+</div>
+<button class="outline outline-1 outline-primary text-primary px-unit-lg py-unit-sm rounded-lg hover:bg-primary-fixed transition-colors">Full Report</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Quiz History -->
+<div class="lg:col-span-2 space-y-unit-md">
+<h5 class="font-label-md text-on-surface-variant">Quiz Score History</h5>
+<div class="h-48 relative border-l border-b border-surface-container flex items-end">
+<div class="flex justify-around items-end w-full h-full px-unit-lg">
+<div class="w-8 bg-tertiary-container rounded-t h-[90%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">92</div>
+</div>
+<div class="w-8 bg-tertiary-container rounded-t h-[82%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">82</div>
+</div>
+<div class="w-8 bg-error rounded-t h-[42%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">42</div>
+</div>
+<div class="w-8 bg-error rounded-t h-[38%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">38</div>
+</div>
+</div>
+</div>
+<div class="flex justify-around text-label-sm text-on-surface-variant px-unit-lg">
+<span>Quiz 1</span><span>Quiz 2</span><span>Quiz 3</span><span>Quiz 4</span>
+</div>
+</div>
+<!-- AI Summary -->
+<div class="bg-surface-container-high p-unit-lg rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-unit-sm">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="auto_awesome">auto_awesome</span>
+<h5 class="font-bold text-on-surface">Sarah's Learning Profile</h5>
+</div>
+<p class="text-body-sm text-on-surface-variant italic">
+                                "Sarah shows high aptitude for conceptual design but struggles with technical implementation. Her engagement dropped significantly after the second quiz failure, indicating a possible motivational block."
+                            </p>
+</div>
+<div class="mt-unit-lg space-y-unit-sm">
+<div class="text-label-sm font-bold text-primary uppercase">Recommended Action</div>
+<p class="text-body-sm font-medium">Schedule 15m 1-on-1 to review Module 3 logic before next project due date.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB (Suppressed on this page as per rules, but showing context-based FAB if needed) -->
+<!-- The rules suggest suppressing FAB on instructor/analytics screens to focus on data. -->
+</body></html>

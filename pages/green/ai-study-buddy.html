@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>atomlearn AI Tutor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e5eeff;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#006e2f",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-primary": "#4ae176",
+                      "on-primary-fixed": "#002109",
+                      "primary-container": "#22c55e",
+                      "on-secondary-container": "#5c647a",
+                      "surface-container": "#eceef0",
+                      "on-primary-fixed-variant": "#005321",
+                      "tertiary-fixed": "#d3e4fe",
+                      "surface": "#f7f9fb",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-container": "#314156",
+                      "surface-container-low": "#f2f4f6",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "surface-dim": "#d8dadc",
+                      "primary": "#006e2f",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed-dim": "#bec6e0",
+                      "on-primary-container": "#004b1e",
+                      "outline-variant": "#bccbb9",
+                      "primary-fixed": "#6bff8f",
+                      "inverse-surface": "#2d3133",
+                      "on-surface": "#191c1e",
+                      "secondary-fixed": "#dae2fd",
+                      "background": "#f7f9fb",
+                      "secondary": "#565e74",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#9dadc6",
+                      "surface-container-highest": "#e0e3e5",
+                      "tertiary": "#505f76",
+                      "primary-fixed-dim": "#4ae176",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "secondary-container": "#dae2fd",
+                      "on-secondary-fixed": "#131b2e",
+                      "surface-variant": "#e0e3e5",
+                      "surface-container-high": "#e6e8ea",
+                      "error-container": "#ffdad6",
+                      "on-error-container": "#93000a",
+                      "outline": "#6d7b6c",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-background": "#191c1e",
+                      "surface-bright": "#f7f9fb",
+                      "on-secondary-fixed-variant": "#3f465c",
+                      "on-surface-variant": "#3d4a3d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit-xs": "0.25rem",
+                      "sidebar-width": "280px",
+                      "unit-sm": "0.5rem",
+                      "unit-xl": "2.5rem",
+                      "unit-md": "1rem",
+                      "gutter": "1.5rem",
+                      "container-max": "1440px",
+                      "unit-lg": "1.5rem",
+                      "margin-desktop": "2rem",
+                      "margin-mobile": "1rem"
+              },
+              "fontFamily": {
+                      "display-md": ["Sora"],
+                      "body-sm": ["DM Sans"],
+                      "display-lg": ["Sora"],
+                      "label-md": ["DM Sans"],
+                      "body-lg": ["DM Sans"],
+                      "headline-md": ["Sora"],
+                      "body-md": ["DM Sans"],
+                      "headline-sm": ["Sora"],
+                      "headline-lg": ["Sora"],
+                      "label-sm": ["DM Sans"],
+                      "headline-lg-mobile": ["Sora"],
+                      "display-lg-mobile": ["Sora"]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- SIDEBAR NAVIGATION (SideNavBar) -->
+<aside class="flex flex-col h-screen fixed left-0 top-0 z-40 py-unit-lg bg-on-surface dark:bg-on-background fixed left-0 top-0 h-full w-sidebar-width shadow-sm">
+<div class="px-unit-lg mb-unit-xl">
+<h1 class="font-display-md text-headline-md font-bold text-surface-bright">atomlearn</h1>
+<p class="text-surface-variant font-label-sm">Smart Adaptive LMS</p>
+</div>
+<nav class="flex-1 flex flex-col space-y-unit-xs">
+<!-- Dashboard Tab -->
+<a class="text-surface-variant dark:text-surface-dim px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out hover:bg-on-secondary-fixed-variant/20" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<!-- Courses Tab -->
+<a class="text-surface-variant dark:text-surface-dim px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out hover:bg-on-secondary-fixed-variant/20" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-body-md">Courses</span>
+</a>
+<!-- AI Tutor (ACTIVE) -->
+<a class="bg-primary/10 text-primary border-l-4 border-primary px-unit-lg py-unit-md flex items-center gap-unit-sm transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-body-md font-bold">AI Tutor</span>
+</a>
+<!-- My Progress Tab -->
+<a class="text-surface-variant dark:text-surface-dim px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out hover:bg-on-secondary-fixed-variant/20" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md">My Progress</span>
+</a>
+<!-- Instructor Tab -->
+<a class="text-surface-variant dark:text-surface-dim px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out hover:bg-on-secondary-fixed-variant/20" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-body-md">Instructor</span>
+</a>
+<!-- Settings Tab -->
+<a class="text-surface-variant dark:text-surface-dim px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out hover:bg-on-secondary-fixed-variant/20" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-unit-lg pt-unit-md">
+<a class="text-surface-variant dark:text-surface-dim px-unit-lg py-unit-md flex items-center gap-unit-sm hover:text-surface-bright transition-all duration-200 ease-in-out hover:bg-on-secondary-fixed-variant/20" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- MAIN CONTENT AREA -->
+<main class="ml-sidebar-width flex h-screen overflow-hidden">
+<!-- Conversation History Sidebar (Internal) -->
+<div class="w-72 bg-surface-container-lowest border-r border-surface-container flex flex-col">
+<div class="p-unit-lg border-b border-surface-container">
+<button class="w-full bg-primary text-on-primary py-unit-md px-unit-lg rounded-xl flex items-center justify-center gap-unit-sm font-headline-sm transition-transform active:scale-95 hover:bg-primary-container">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    New Chat
+                </button>
+</div>
+<div class="flex-1 overflow-y-auto py-unit-md space-y-1">
+<div class="px-unit-lg py-unit-sm text-on-surface-variant font-label-sm uppercase tracking-wider">Recent History</div>
+<button class="w-full px-unit-lg py-unit-md text-left flex items-center gap-unit-sm bg-primary/5 border-r-4 border-primary text-primary transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="chat_bubble">chat_bubble</span>
+<span class="truncate font-body-md">Data Science Fundamentals</span>
+</button>
+<button class="w-full px-unit-lg py-unit-md text-left flex items-center gap-unit-sm text-on-surface-variant hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-body-md" data-icon="chat_bubble">chat_bubble</span>
+<span class="truncate font-body-md">Neural Networks Explanation</span>
+</button>
+<button class="w-full px-unit-lg py-unit-md text-left flex items-center gap-unit-sm text-on-surface-variant hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-body-md" data-icon="chat_bubble">chat_bubble</span>
+<span class="truncate font-body-md">Python List Comprehension</span>
+</button>
+<button class="w-full px-unit-lg py-unit-md text-left flex items-center gap-unit-sm text-on-surface-variant hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-body-md" data-icon="chat_bubble">chat_bubble</span>
+<span class="truncate font-body-md">Exam Prep: Calc II</span>
+</button>
+</div>
+</div>
+<!-- Chat Window -->
+<section class="flex-1 flex flex-col bg-background relative">
+<!-- Top Bar -->
+<header class="h-16 bg-surface flex items-center justify-between px-unit-xl shadow-sm z-10">
+<div class="flex items-center gap-unit-md">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-on-surface">atombot</h2>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="text-on-surface-variant font-label-sm">Always learning</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-unit-md text-on-surface-variant">
+<button class="p-unit-sm hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="p-unit-sm hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Messages Area -->
+<div class="flex-1 overflow-y-auto p-unit-xl space-y-unit-lg">
+<!-- Bot Message -->
+<div class="flex gap-unit-md max-w-4xl">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-body-sm" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container p-unit-lg rounded-xl rounded-tl-none shadow-sm space-y-unit-sm">
+<p class="text-on-surface font-body-md">Hello! I'm your atomlearn study buddy. How can I help you master your curriculum today? I can explain complex concepts, debug code, or help you practice for upcoming tests.</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-unit-md flex-row-reverse max-w-4xl ml-auto">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-body-sm" data-icon="person">person</span>
+</div>
+<div class="bg-primary text-on-primary p-unit-lg rounded-xl rounded-tr-none shadow-sm">
+<p class="font-body-md">Can you explain the difference between Overfitting and Underfitting in Machine Learning?</p>
+</div>
+</div>
+<!-- Bot Message (Elaborate) -->
+<div class="flex gap-unit-md max-w-4xl">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-body-sm" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container p-unit-lg rounded-xl rounded-tl-none shadow-sm space-y-unit-lg">
+<div class="space-y-unit-sm">
+<h3 class="font-headline-sm text-primary">Overfitting vs. Underfitting</h3>
+<p class="text-on-surface font-body-md">Think of it like preparing for a test by memorizing the textbook vs. understanding the concepts.</p>
+</div>
+<div class="grid grid-cols-2 gap-unit-md">
+<div class="p-unit-md bg-error-container/20 border border-error/10 rounded-lg">
+<h4 class="font-bold text-error mb-1">Overfitting</h4>
+<p class="text-body-sm text-on-surface-variant">The model learns the "noise" in the data too well. Excellent on training data, but fails on new data.</p>
+</div>
+<div class="p-unit-md bg-secondary-container/20 border border-secondary/10 rounded-lg">
+<h4 class="font-bold text-secondary mb-1">Underfitting</h4>
+<p class="text-body-sm text-on-surface-variant">The model is too simple to learn the underlying pattern. Performs poorly on both training and test data.</p>
+</div>
+</div>
+<img alt="ML Concepts Visual" class="w-full h-48 object-cover rounded-lg border border-surface-container shadow-sm" data-alt="A sophisticated data visualization dashboard showing contrasting line graphs representing overfitting and underfitting in machine learning. The visual style is high-fidelity with a corporate navy and vibrant orange color palette. Soft glowing lines intersect against a clean, minimalist light-gray background, creating a premium and technologically advanced educational atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4_AWbrja0CLeHFxUJCk3r6TYOM3xjVD5ZDk6GCycIT9hI0zgPl7ZvNJUFJYJ4DyU8mEOGCv9LuyUzaqV03xy3y5sarVQxC8GmpeiassEBZmjhZV0L_LUZ3-L7iUyGz_qliS2rdjKF-VZr7IKu94nSgiRmQKwCMcgFDiGc6LITLZihGlQ8s8t0Tgx-3-WgJBq3Uln2VGdvihyVfn-GK6QLIqcbDUGyxTM1LlcNLQUEDUJ4EtHwgIux7gfx5OlhKRcsive1fKy4cx8"/>
+<p class="text-on-surface font-body-md italic">Would you like me to generate a Python snippet demonstrating this with a sample dataset?</p>
+</div>
+</div>
+</div>
+<!-- Input Area & Footer -->
+<div class="p-unit-xl pt-0">
+<div class="max-w-4xl mx-auto space-y-unit-md">
+<!-- Suggested Pills -->
+<div class="flex flex-wrap gap-unit-sm">
+<button class="px-unit-md py-unit-xs bg-surface-container text-on-surface-variant border border-surface-container-high rounded-full font-label-md hover:bg-primary-container hover:text-on-primary transition-colors active:scale-95">
+                            Show Python code
+                        </button>
+<button class="px-unit-md py-unit-xs bg-surface-container text-on-surface-variant border border-surface-container-high rounded-full font-label-md hover:bg-primary-container hover:text-on-primary transition-colors active:scale-95">
+                            Overfitting vs Underfitting
+                        </button>
+<button class="px-unit-md py-unit-xs bg-surface-container text-on-surface-variant border border-surface-container-high rounded-full font-label-md hover:bg-primary-container hover:text-on-primary transition-colors active:scale-95">
+                            Python cheatsheet
+                        </button>
+<button class="px-unit-md py-unit-xs bg-surface-container text-on-surface-variant border border-surface-container-high rounded-full font-label-md hover:bg-primary-container hover:text-on-primary transition-colors active:scale-95">
+                            Generate Quiz
+                        </button>
+</div>
+<!-- Input Bar -->
+<div class="relative">
+<div class="bg-surface-container-lowest border-2 border-surface-container-high focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 rounded-xl transition-all shadow-sm">
+<textarea class="w-full bg-transparent border-none focus:ring-0 p-unit-lg pr-unit-xl resize-none font-body-md text-on-surface placeholder:text-on-surface-variant/50" placeholder="Message atombot..." rows="1"></textarea>
+<div class="absolute right-unit-md bottom-unit-md flex items-center gap-unit-sm">
+<button class="p-unit-sm text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<button class="bg-primary text-on-primary p-unit-sm rounded-lg hover:bg-primary-container transition-all active:scale-90">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+<p class="text-center mt-unit-sm text-on-surface-variant/60 font-label-sm">
+                            Powered by Claude AI • atombot may produce inaccurate information.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (Hidden on AI Tutor as per rules for task-focused screens) -->
+</body></html>

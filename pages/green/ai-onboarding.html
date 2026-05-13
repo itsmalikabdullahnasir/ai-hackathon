@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#006e2f",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#4ae176",
+                    "on-primary-fixed": "#002109",
+                    "primary-container": "#22c55e",
+                    "on-secondary-container": "#5c647a",
+                    "surface-container": "#eceef0",
+                    "on-primary-fixed-variant": "#005321",
+                    "tertiary-fixed": "#d3e4fe",
+                    "surface": "#f7f9fb",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#314156",
+                    "surface-container-low": "#f2f4f6",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "surface-dim": "#d8dadc",
+                    "primary": "#006e2f",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "on-primary-container": "#004b1e",
+                    "outline-variant": "#bccbb9",
+                    "primary-fixed": "#6bff8f",
+                    "inverse-surface": "#2d3133",
+                    "on-surface": "#191c1e",
+                    "secondary-fixed": "#dae2fd",
+                    "background": "#f7f9fb",
+                    "secondary": "#565e74",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#9dadc6",
+                    "surface-container-highest": "#e0e3e5",
+                    "tertiary": "#505f76",
+                    "primary-fixed-dim": "#4ae176",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "secondary-container": "#dae2fd",
+                    "on-secondary-fixed": "#131b2e",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-high": "#e6e8ea",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "outline": "#6d7b6c",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-background": "#191c1e",
+                    "surface-bright": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "on-surface-variant": "#3d4a3d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit-xs": "0.25rem",
+                    "sidebar-width": "280px",
+                    "unit-sm": "0.5rem",
+                    "unit-xl": "2.5rem",
+                    "margin-desktop": "2.5rem",
+                    "unit-md": "1rem",
+                    "gutter": "1.5rem",
+                    "container-max": "1440px",
+                    "unit-lg": "1.5rem",
+                    "margin-mobile": "1rem"
+            },
+            "fontFamily": {
+                    "display-md": ["Sora"],
+                    "body-sm": ["DM Sans"],
+                    "display-lg": ["Sora"],
+                    "label-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "headline-md": ["Sora"],
+                    "body-md": ["DM Sans"],
+                    "headline-sm": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "label-sm": ["DM Sans"],
+                    "headline-lg-mobile": ["Sora"],
+                    "display-lg-mobile": ["Sora"]
+            },
+            "fontSize": {
+                    "display-md": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .progress-pulse {
+            animation: pulse-width 2s infinite ease-in-out;
+        }
+        @keyframes pulse-width {
+            0% { width: 40%; }
+            50% { width: 70%; }
+            100% { width: 40%; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col items-center">
+<!-- Top Progress Bar (Global Context) -->
+<header class="w-full fixed top-0 left-0 bg-surface z-50">
+<div class="h-1.5 w-full bg-surface-container">
+<div class="h-full bg-primary transition-all duration-500" style="width: 25%;"></div>
+</div>
+<div class="flex justify-between items-center px-margin-desktop py-unit-md max-w-container-max mx-auto">
+<div class="flex items-center gap-unit-sm">
+<span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+<span class="font-display-md text-headline-sm font-bold text-primary">atomlearn</span>
+</div>
+<div class="text-label-md text-secondary">Step 1 of 4</div>
+<button class="text-label-md text-on-surface-variant hover:text-primary transition-colors">Exit Quiz</button>
+</div>
+</header>
+<main class="w-full max-w-container-max px-margin-mobile md:px-margin-desktop pt-24 pb-unit-xl flex flex-col items-center">
+<!-- Section 1: Background Assessment -->
+<section class="w-full max-w-3xl flex flex-col items-center text-center" id="step-1">
+<h1 class="font-display-md text-headline-lg mb-unit-sm">Tell us about your background</h1>
+<p class="text-body-lg text-secondary mb-unit-xl">We'll tailor your curriculum based on your previous education and experience.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-unit-md w-full">
+<!-- Option Card -->
+<button class="flex flex-col items-center p-unit-xl bg-surface-container-lowest border-2 border-transparent hover:border-primary rounded-xl shadow-sm transition-all group active:scale-[0.98]">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-unit-md group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-white text-3xl" data-icon="school">school</span>
+</div>
+<span class="font-headline-sm text-on-surface">CS Graduate</span>
+<span class="text-body-sm text-secondary mt-unit-xs">Deep technical fundamentals and algorithm knowledge.</span>
+</button>
+<button class="flex flex-col items-center p-unit-xl bg-surface-container-lowest border-2 border-primary rounded-xl shadow-sm transition-all group active:scale-[0.98]">
+<div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-unit-md">
+<span class="material-symbols-outlined text-white text-3xl" data-icon="terminal">terminal</span>
+</div>
+<span class="font-headline-sm text-on-surface">Working in Tech</span>
+<span class="text-body-sm text-secondary mt-unit-xs">Experience in industry workflows and professional environments.</span>
+</button>
+<button class="flex flex-col items-center p-unit-xl bg-surface-container-lowest border-2 border-transparent hover:border-primary rounded-xl shadow-sm transition-all group active:scale-[0.98]">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-unit-md group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-white text-3xl" data-icon="diversity_3">diversity_3</span>
+</div>
+<span class="font-headline-sm text-on-surface">Non-tech Professional</span>
+<span class="text-body-sm text-secondary mt-unit-xs">Domain expert looking to leverage AI in their field.</span>
+</button>
+<button class="flex flex-col items-center p-unit-xl bg-surface-container-lowest border-2 border-transparent hover:border-primary rounded-xl shadow-sm transition-all group active:scale-[0.98]">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-unit-md group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-white text-3xl" data-icon="person">person</span>
+</div>
+<span class="font-headline-sm text-on-surface">Current Student</span>
+<span class="text-body-sm text-secondary mt-unit-xs">Looking to supplement studies with adaptive AI learning.</span>
+</button>
+</div>
+<div class="mt-unit-xl flex justify-between w-full">
+<button class="px-unit-xl py-unit-md rounded-lg text-secondary border border-transparent font-label-md flex items-center gap-unit-xs">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                    Back
+                </button>
+<button class="bg-primary text-white px-unit-xl py-unit-md rounded-lg font-label-md shadow-sm hover:brightness-110 active:scale-95 transition-all">
+                    Continue
+                </button>
+</div>
+</section>
+<!-- Loading Overlay Concept (Hidden) -->
+<section class="hidden fixed inset-0 z-[60] bg-background flex flex-col items-center justify-center p-margin-desktop" id="loading-state">
+<div class="relative w-24 h-24 mb-unit-xl">
+<div class="absolute inset-0 bg-primary/20 rounded-full animate-ping"></div>
+<div class="relative flex items-center justify-center w-full h-full bg-primary rounded-full">
+<span class="material-symbols-outlined text-white text-4xl" data-icon="psychology">psychology</span>
+</div>
+</div>
+<h2 class="font-display-md text-headline-md text-center max-w-md">Our AI is building your personalized learning path...</h2>
+<div class="w-full max-w-sm mt-unit-xl h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary progress-pulse"></div>
+</div>
+<p class="text-body-sm text-secondary mt-unit-md">Analyzing background, goals, and technical skill gaps...</p>
+</section>
+<!-- Result View: Skill Assessment Success (Hidden) -->
+<section class="hidden w-full max-w-container-max flex flex-col lg:flex-row gap-gutter items-start" id="results">
+<!-- Summary Bento Card -->
+<div class="lg:w-1/3 w-full space-y-gutter">
+<div class="bg-surface-container-lowest p-unit-xl rounded-xl shadow-sm border border-surface-container">
+<div class="flex items-center gap-unit-md mb-unit-xl">
+<div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center relative">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="auto_awesome">auto_awesome</span>
+<div class="absolute -bottom-1 -right-1 bg-primary-container text-on-primary-container rounded-full px-unit-xs py-[2px] text-[10px] font-bold uppercase">Ready</div>
+</div>
+<div>
+<span class="text-label-sm uppercase tracking-wider text-secondary">Assessed Level</span>
+<h3 class="font-headline-md text-primary">Intermediate</h3>
+</div>
+</div>
+<div class="space-y-unit-md">
+<div class="flex justify-between items-center">
+<span class="text-body-md text-secondary">Skill Match</span>
+<span class="font-bold text-on-surface">82%</span>
+</div>
+<div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[82%]"></div>
+</div>
+<div class="pt-unit-md grid grid-cols-2 gap-unit-sm">
+<div class="bg-surface-container p-unit-sm rounded-lg">
+<span class="text-label-sm text-secondary block">Duration</span>
+<span class="font-bold">12 Weeks</span>
+</div>
+<div class="bg-surface-container p-unit-sm rounded-lg">
+<span class="text-label-sm text-secondary block">Daily Effort</span>
+<span class="font-bold">1.5 Hours</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Skill Pills -->
+<div class="bg-surface-container-lowest p-unit-xl rounded-xl shadow-sm border border-surface-container">
+<h4 class="font-headline-sm mb-unit-md">Focus Areas</h4>
+<div class="flex flex-wrap gap-unit-sm">
+<span class="px-unit-md py-unit-xs bg-surface-container text-secondary rounded-full text-body-sm">Data Structures</span>
+<span class="px-unit-md py-unit-xs bg-primary/10 text-primary rounded-full text-body-sm font-medium">FastAPI</span>
+<span class="px-unit-md py-unit-xs bg-surface-container text-secondary rounded-full text-body-sm">Prompt Engineering</span>
+<span class="px-unit-md py-unit-xs bg-primary/10 text-primary rounded-full text-body-sm font-medium">Neural Networks</span>
+<span class="px-unit-md py-unit-xs bg-surface-container text-secondary rounded-full text-body-sm">Deployment</span>
+</div>
+</div>
+</div>
+<!-- Recommended Path Content -->
+<div class="lg:flex-1 w-full space-y-gutter">
+<div class="relative group overflow-hidden rounded-xl bg-on-surface h-80 flex items-end">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="A high-fidelity 3D digital illustration representing advanced neural networks and artificial intelligence. Glowing green threads of data weave through a dark navy space, forming a complex and structured web. The lighting is dramatic and moody, focusing on the center where the most intense green light emanates. The style is modern, professional, and corporate, emphasizing high-tech complexity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwAKGVse2giVXrrx2oCvFPEC58Qp07a8E6eSLO5hF-0bfdA-hlMzQsKQJvmJkRCbbVsSu9u_sWMSsB1CuyWSJ7hpYl2gDVhqV4-7C3yv0_h-C3n8rigPr07wwwpPHIM_xZNMfyNubycNByc1zah4cYclUspV1UZQbcniBKis-c-LOKs2Bl3ZuektOBrVnujdrbP6LQeuVZXvmOfrrogLmLSHq-qgHFwXZ1qVKK8onGBeBF0prfLWTnLAyNOF_vQoCdznRD8oe80yc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface via-transparent to-transparent"></div>
+<div class="relative p-unit-xl w-full">
+<div class="inline-flex items-center gap-unit-xs bg-primary text-white px-unit-sm py-1 rounded text-label-sm font-bold uppercase tracking-wide mb-unit-sm">Recommended for you</div>
+<h2 class="text-white font-display-md text-headline-lg">Advanced Python for AI Engineers</h2>
+<p class="text-surface-variant text-body-md max-w-xl">Master the bridge between classical programming and generative model deployment. Your background in tech makes you the perfect candidate for this intensive track.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Module Highlight -->
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl border border-surface-container flex gap-unit-md">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="auto_fix_high">auto_fix_high</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Auto-Adaptive Content</h5>
+<p class="text-body-sm text-secondary">Quizzes will adjust difficulty in real-time based on your responses.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-unit-lg rounded-xl border border-surface-container flex gap-unit-md">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="forum">forum</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">AI Tutor Support</h5>
+<p class="text-body-sm text-secondary">24/7 access to atomlearn's smart tutor for code reviews.</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row items-center justify-between gap-unit-md pt-unit-md border-t border-surface-container">
+<div class="flex items-center gap-unit-sm text-secondary">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="text-body-sm italic">Accredited by the AI Learning Council</span>
+</div>
+<button class="w-full md:w-auto bg-primary text-white px-unit-xl py-unit-lg rounded-lg font-headline-sm shadow-sm hover:brightness-110 active:scale-95 transition-all">
+                        Start My Learning Journey
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- UI Interaction Simulation Tip -->
+<div class="fixed bottom-6 right-6 z-50">
+<div class="bg-on-surface text-surface px-unit-lg py-unit-sm rounded-full shadow-lg text-label-md flex items-center gap-unit-sm border border-surface-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="info">info</span>
+<span>Onboarding assessment in progress</span>
+</div>
+</div>
+</body></html>

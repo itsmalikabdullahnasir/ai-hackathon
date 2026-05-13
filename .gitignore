@@ -2,3 +2,4 @@
 .next/
 Screenshot*
 mcp_server.config
+.env.local

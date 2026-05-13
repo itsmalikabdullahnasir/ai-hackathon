@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bot, Send, Plus, MessageSquare, Sparkles, User, Copy, ThumbsUp,
-  ThumbsDown, RefreshCw, ChevronRight, Zap,
+  ThumbsDown, RefreshCw, ChevronRight, Zap, Mic, Square, Play,
 } from 'lucide-react'
 import AppShell from '@/components/AppShell'
 import { currentUser } from '@/lib/mockData'
@@ -42,6 +42,9 @@ const SAMPLE_CONVERSATIONS: Conversation[] = [
 ]
 
 const BOT_RESPONSES: Record<string, string> = {
+  offTopic: `Thanks for the question! I am designed to help with learning and study topics only.
+
+Share a concept you want to learn (e.g., data science, ML, Python, SQL), and I will help you.` ,
   default: `Great question! Let me break that down for you.
 
 In data science and AI, we often encounter complex concepts that become much clearer when explained step by step.
@@ -110,8 +113,19 @@ df_imputed = imputer.fit_transform(df)
 Would you like me to walk through a real-world example?`,
 }
 
+function isLearningRelated(input: string): boolean {
+  const learningKeywords = [
+    'learn', 'learning', 'study', 'lesson', 'concept', 'syllabus', 'assignment',
+    'python', 'sql', 'pandas', 'data', 'dataset', 'analysis', 'statistics', 'math',
+    'ml', 'machine learning', 'ai', 'neural', 'model', 'algorithm', 'gradient',
+    'overfitting', 'cross validation', 'regression', 'classification',
+  ]
+  return learningKeywords.some((keyword) => input.includes(keyword))
+}
+
 function getResponse(input: string): string {
   const lower = input.toLowerCase()
+  if (!isLearningRelated(lower)) return BOT_RESPONSES.offTopic
   if (lower.includes('gradient') || lower.includes('descent')) return BOT_RESPONSES.gradient
   if (lower.includes('pandas') || lower.includes('missing')) return BOT_RESPONSES.pandas
   return BOT_RESPONSES.default
@@ -131,10 +145,37 @@ export default function AiTutorPage() {
   const [loading, setLoading] = useState(false)
   const [activeConv, setActiveConv] = useState('current')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioBlobRef = useRef<Blob | null>(null)
+  const recordingTimeoutRef = useRef<number | null>(null)
+  const [recording, setRecording] = useState(false)
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [transcript, setTranscript] = useState('')
+  const [feedback, setFeedback] = useState('')
+  const [voiceLoading, setVoiceLoading] = useState(false)
+  const [voiceError, setVoiceError] = useState('')
+  const [explainInput, setExplainInput] = useState('')
+  const [explainLoading, setExplainLoading] = useState(false)
+  const [explainError, setExplainError] = useState('')
+  const [lessonScript, setLessonScript] = useState('')
+  const [lessonMessageId, setLessonMessageId] = useState<string | null>(null)
+  const [explainMode, setExplainMode] = useState(false)
+  const [explainResult, setExplainResult] = useState<{
+    understood: string[]
+    missing: string[]
+    incorrect: string[]
+    note?: string
+  } | null>(null)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  useEffect(() => {
+    return () => {
+      if (recordingTimeoutRef.current) window.clearTimeout(recordingTimeoutRef.current)
+    }
+  }, [])
 
   async function sendMessage(text?: string) {
     const content = text ?? input.trim()
@@ -145,17 +186,206 @@ export default function AiTutorPage() {
     setMessages((m) => [...m, userMsg])
     setLoading(true)
 
-    // TODO: POST /api/ai-chat { messages, student_id, session_id } — streams Claude response
-    await new Promise((r) => setTimeout(r, 1000 + Math.random() * 500))
+    try {
+      const response = await fetch('/api/ai-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            ...messages.map((msg) => ({ role: msg.role, content: msg.content })),
+            { role: 'user', content },
+          ],
+        }),
+      })
 
-    const botMsg: Message = {
-      id: (Date.now() + 1).toString(),
-      role: 'assistant',
-      content: getResponse(content),
-      timestamp: new Date(),
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload?.error || 'AI tutor failed to respond.')
+      }
+
+      const data = await response.json()
+      const botContent = data?.content || getResponse(content)
+      const botMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: botContent,
+        timestamp: new Date(),
+      }
+      setMessages((m) => [...m, botMsg])
+      if (botContent === BOT_RESPONSES.offTopic) {
+        setLessonScript('')
+        setLessonMessageId(null)
+        setExplainMode(false)
+        setExplainResult(null)
+      } else {
+        setLessonScript(botContent)
+        setLessonMessageId(botMsg.id)
+        setExplainMode(false)
+        setExplainResult(null)
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Something went wrong.'
+      showToast(message, 'error')
+      const fallbackMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: getResponse(content),
+        timestamp: new Date(),
+      }
+      setMessages((m) => [...m, fallbackMsg])
+    } finally {
+      setLoading(false)
     }
-    setMessages((m) => [...m, botMsg])
-    setLoading(false)
+  }
+
+  async function startRecording() {
+    if (recording) return
+    setVoiceError('')
+    setTranscript('')
+    setFeedback('')
+    setAudioUrl(null)
+    audioBlobRef.current = null
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream)
+      const chunks: BlobPart[] = []
+
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) chunks.push(event.data)
+      }
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' })
+        audioBlobRef.current = blob
+        setAudioUrl(URL.createObjectURL(blob))
+        stream.getTracks().forEach((track) => track.stop())
+      }
+
+      mediaRecorderRef.current = recorder
+      recorder.start()
+      setRecording(true)
+
+      recordingTimeoutRef.current = window.setTimeout(() => {
+        if (mediaRecorderRef.current?.state === 'recording') {
+          stopRecording()
+        }
+      }, 60000)
+    } catch (error) {
+      setVoiceError('Microphone access denied. Please allow mic access and try again.')
+    }
+  }
+
+  function stopRecording() {
+    if (!recording || !mediaRecorderRef.current) return
+    mediaRecorderRef.current.stop()
+    setRecording(false)
+    if (recordingTimeoutRef.current) {
+      window.clearTimeout(recordingTimeoutRef.current)
+      recordingTimeoutRef.current = null
+    }
+  }
+
+  async function submitVoiceNote() {
+    if (voiceLoading || !audioBlobRef.current) {
+      setVoiceError('Record a voice note before submitting.')
+      return
+    }
+
+    setVoiceError('')
+    setVoiceLoading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('audio', audioBlobRef.current, 'voice-note.webm')
+      const response = await fetch('/api/voice-note', { method: 'POST', body: formData })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload?.error || 'Voice note processing failed.')
+      }
+
+      const data = await response.json()
+      setTranscript(data.transcript || '')
+      setFeedback(data.feedback || '')
+      showToast('Voice note processed!', 'success')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Something went wrong.'
+      setVoiceError(message)
+      showToast(message, 'error')
+    } finally {
+      setVoiceLoading(false)
+    }
+  }
+
+  function startExplainBack() {
+    if (!lessonScript) return
+    setExplainInput('')
+    setExplainError('')
+    setExplainResult(null)
+    setExplainMode(true)
+    if (lessonMessageId) {
+      setMessages((m) => m.filter((msg) => msg.id !== lessonMessageId))
+      setLessonMessageId(null)
+    }
+  }
+
+  function cancelExplainBack() {
+    if (!lessonScript) return
+    if (!lessonMessageId) {
+      const restoredId = Date.now().toString()
+      setMessages((m) => [...m, { id: restoredId, role: 'assistant', content: lessonScript, timestamp: new Date() }])
+      setLessonMessageId(restoredId)
+    }
+    setExplainMode(false)
+    setExplainError('')
+  }
+
+  async function submitExplainBack() {
+    if (explainLoading) return
+    const content = explainInput.trim()
+    if (!content) {
+      setExplainError('Write your explanation before submitting.')
+      return
+    }
+
+    setExplainError('')
+    setExplainResult(null)
+    setExplainLoading(true)
+
+    try {
+      const response = await fetch('/api/explain-back', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lesson: lessonScript, explanation: content }),
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload?.error || 'Explain-back evaluation failed.')
+      }
+
+      const data = await response.json()
+      setExplainResult({
+        understood: Array.isArray(data.understood) ? data.understood : [],
+        missing: Array.isArray(data.missing) ? data.missing : [],
+        incorrect: Array.isArray(data.incorrect) ? data.incorrect : [],
+        note: typeof data.note === 'string' ? data.note : undefined,
+      })
+      if (!lessonMessageId) {
+        const restoredId = Date.now().toString()
+        setMessages((m) => [...m, { id: restoredId, role: 'assistant', content: lessonScript, timestamp: new Date() }])
+        setLessonMessageId(restoredId)
+      }
+      setExplainMode(false)
+      showToast('Explain-back feedback ready!', 'success')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Something went wrong.'
+      setExplainError(message)
+      showToast(message, 'error')
+    } finally {
+      setExplainLoading(false)
+    }
   }
 
   function newChat() {
@@ -235,6 +465,167 @@ export default function AiTutorPage() {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-3xl mx-auto bg-white border border-brand-border rounded-2xl p-5 shadow-sm"
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-brand-navy font-sora">Voice Note Learning</p>
+                    <p className="text-xs text-brand-muted font-dm-sans mt-1">
+                      Record a 60-second concept recap. The AI will transcribe it, evaluate understanding, and give feedback.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {!recording ? (
+                      <button
+                        onClick={startRecording}
+                        className="flex items-center gap-2 bg-brand-orange text-white px-3 py-2 rounded-xl text-xs font-semibold font-dm-sans hover:bg-brand-orange-dark transition"
+                      >
+                        <Mic size={14} /> Start
+                      </button>
+                    ) : (
+                      <button
+                        onClick={stopRecording}
+                        className="flex items-center gap-2 bg-brand-danger text-white px-3 py-2 rounded-xl text-xs font-semibold font-dm-sans hover:bg-brand-danger/90 transition"
+                      >
+                        <Square size={14} /> Stop
+                      </button>
+                    )}
+                    <button
+                      onClick={submitVoiceNote}
+                      disabled={voiceLoading || !audioUrl}
+                      className="flex items-center gap-2 border border-brand-border px-3 py-2 rounded-xl text-xs font-semibold font-dm-sans text-brand-navy hover:border-brand-orange/40 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {voiceLoading ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
+                      Analyze
+                    </button>
+                  </div>
+                </div>
+
+                {audioUrl && (
+                  <div className="flex items-center gap-3 bg-brand-bg border border-brand-border rounded-xl px-3 py-2">
+                    <audio controls src={audioUrl} className="w-full" />
+                  </div>
+                )}
+
+                {voiceError && (
+                  <div className="text-xs text-brand-danger font-dm-sans">{voiceError}</div>
+                )}
+
+                {(transcript || feedback) && (
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="bg-brand-bg border border-brand-border rounded-xl p-3">
+                      <p className="text-[11px] uppercase tracking-widest text-brand-muted font-dm-sans mb-2">Transcript</p>
+                      <p className="text-xs text-gray-700 font-dm-sans whitespace-pre-line">{transcript || 'No transcript yet.'}</p>
+                    </div>
+                    <div className="bg-brand-bg border border-brand-border rounded-xl p-3">
+                      <p className="text-[11px] uppercase tracking-widest text-brand-muted font-dm-sans mb-2">Tutor Feedback</p>
+                      <p className="text-xs text-gray-700 font-dm-sans whitespace-pre-line">{feedback || 'No feedback yet.'}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+            {lessonScript && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="max-w-3xl mx-auto bg-white border border-brand-border rounded-2xl p-5 shadow-sm"
+              >
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-brand-navy font-sora">Explain It Back to Me</p>
+                      <p className="text-xs text-brand-muted font-dm-sans mt-1">
+                        After the lesson, explain it in your own words. I will highlight what you got right and what is missing.
+                      </p>
+                    </div>
+                    {!explainMode && (
+                      <button
+                        onClick={startExplainBack}
+                        className="flex items-center gap-2 bg-brand-orange text-white px-3 py-2 rounded-xl text-xs font-semibold font-dm-sans hover:bg-brand-orange-dark transition"
+                      >
+                        <Sparkles size={14} /> Explain it back
+                      </button>
+                    )}
+                  </div>
+
+                  {explainMode && (
+                    <div className="space-y-3">
+                      <textarea
+                        value={explainInput}
+                        onChange={(e) => setExplainInput(e.target.value)}
+                        placeholder="Explain the lesson in your own words."
+                        rows={4}
+                        className="w-full px-4 py-3 bg-brand-bg border border-brand-border rounded-xl text-sm font-dm-sans resize-none
+                                   focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange/40 transition"
+                      />
+                      {explainError && (
+                        <div className="text-xs text-brand-danger font-dm-sans">{explainError}</div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={submitExplainBack}
+                          disabled={explainLoading || !explainInput.trim()}
+                          className="flex items-center gap-2 border border-brand-border px-3 py-2 rounded-xl text-xs font-semibold font-dm-sans text-brand-navy hover:border-brand-orange/40 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {explainLoading ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                          Evaluate
+                        </button>
+                        <button
+                          onClick={cancelExplainBack}
+                          className="text-xs font-semibold font-dm-sans text-gray-400 hover:text-gray-600 transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {explainResult && (
+                    <div className="space-y-3">
+                      {explainResult.note && (
+                        <div className="text-xs text-brand-danger font-dm-sans">{explainResult.note}</div>
+                      )}
+                      <div className="bg-brand-bg border border-brand-border rounded-xl p-3">
+                        <p className="text-[11px] uppercase tracking-widest text-brand-muted font-dm-sans mb-2">Lesson Recap</p>
+                        <p className="text-xs text-gray-700 font-dm-sans whitespace-pre-line">{lessonScript}</p>
+                      </div>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                          <p className="text-[11px] uppercase tracking-widest text-emerald-700 font-dm-sans mb-2">Understood</p>
+                          <ul className="text-xs text-emerald-700 font-dm-sans list-disc pl-4 space-y-1">
+                            {explainResult.understood.map((item, index) => (
+                              <li key={`u-${index}`}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
+                          <p className="text-[11px] uppercase tracking-widest text-rose-700 font-dm-sans mb-2">Missing or Incorrect</p>
+                          <ul className="text-xs text-rose-700 font-dm-sans list-disc pl-4 space-y-1">
+                            {explainResult.missing.map((item, index) => (
+                              <li key={`m-${index}`}>{item}</li>
+                            ))}
+                            {explainResult.incorrect.map((item, index) => (
+                              <li key={`i-${index}`}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      <button
+                        onClick={startExplainBack}
+                        className="text-xs font-semibold font-dm-sans text-brand-orange hover:text-brand-orange-dark transition"
+                      >
+                        Explain it again
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
             {/* Suggested prompts when only initial message */}
             {messages.length === 1 && (
               <motion.div

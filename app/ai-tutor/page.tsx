@@ -7,8 +7,7 @@ import {
   ThumbsDown, RefreshCw, ChevronRight, Zap, Mic, Square, Play, Users,
 } from 'lucide-react'
 import AppShell from '@/components/AppShell'
-import { currentUser } from '@/lib/mockData'
-import { getUsername } from '@/lib/auth'
+import { useUser } from '@/components/UserProvider'
 import { useToast } from '@/components/Toast'
 import clsx from 'clsx'
 
@@ -134,12 +133,13 @@ function getResponse(input: string): string {
 
 export default function AiTutorPage() {
   const { showToast } = useToast()
-  const [displayName, setDisplayName] = useState(currentUser.full_name)
+  const { user } = useUser()
+  const [displayName, setDisplayName] = useState('Learner')
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '0',
       role: 'assistant',
-      content: `Hey ${currentUser.full_name.split(' ')[0]}! 👋 I'm **Autobot**, your personal AI tutor from atomcamp.\n\nI specialize in **Data Science, Machine Learning, Python, SQL, and AI**. I know you're currently working on your Data Analytics bootcamp — so I've got all the context you need!\n\nWhat would you like to explore today?`,
+      content: `Hey there! 👋 I'm **Autobot**, your personal AI tutor from atomcamp.\n\nI specialize in **Data Science, Machine Learning, Python, SQL, and AI**. I know you're currently working on your Data Analytics bootcamp — so I've got all the context you need!\n\nWhat would you like to explore today?`,
       timestamp: new Date(),
     },
   ])
@@ -182,12 +182,9 @@ export default function AiTutorPage() {
   }>>([])
 
   useEffect(() => {
-    const updateName = () => setDisplayName(getUsername() ?? currentUser.full_name)
-    updateName()
-    window.addEventListener('autocamp-username', updateName)
+    if (user?.full_name) setDisplayName(user.full_name)
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    return () => window.removeEventListener('autocamp-username', updateName)
-  }, [messages])
+  }, [messages, user])
 
   useEffect(() => {
     setMessages((prev) => {

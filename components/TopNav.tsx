@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Bell, Search, Calendar, Menu } from 'lucide-react'
-import { currentUser } from '@/lib/mockData'
 import { useRouter } from 'next/navigation'
-import { logout, getUsername, getAuthEmail } from '@/lib/auth'
+import { supabase } from '@/lib/supabase/client'
+import { useUser } from '@/components/UserProvider'
 import { useToast } from '@/components/Toast'
 
 export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
@@ -12,23 +12,13 @@ export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showSchedule, setShowSchedule] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
-  const [displayName, setDisplayName] = useState(currentUser.full_name)
-  const [displayEmail, setDisplayEmail] = useState(currentUser.email)
   const router = useRouter()
   const { showToast } = useToast()
+  const { user } = useUser()
 
-  useEffect(() => {
-    const updateName = () => setDisplayName(getUsername() ?? currentUser.full_name)
-    const updateEmail = () => setDisplayEmail(getAuthEmail() ?? currentUser.email)
-    updateName()
-    updateEmail()
-    window.addEventListener('autocamp-username', updateName)
-    window.addEventListener('autocamp-auth', updateEmail)
-    return () => {
-      window.removeEventListener('autocamp-username', updateName)
-      window.removeEventListener('autocamp-auth', updateEmail)
-    }
-  }, [])
+  const displayName = user?.full_name ?? 'Learner'
+  const displayEmail = user?.email ?? ''
+  const avatarUrl = user?.avatar_url ?? null
 
   const initials = displayName
     .split(' ')
@@ -37,23 +27,18 @@ export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
     .map((part) => part[0]?.toUpperCase())
     .join('') || 'U'
 
-  function handleLogout() {
-    logout()
+  async function handleLogout() {
+    await supabase.auth.signOut()
     showToast('Logged out successfully', 'success')
     router.push('/login')
   }
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-brand-border flex items-center gap-4 px-6 h-16">
-      {/* Mobile menu button */}
-      <button
-        onClick={onMenuClick}
-        className="lg:hidden text-gray-500 hover:text-gray-800 transition-colors"
-      >
+      <button onClick={onMenuClick} className="lg:hidden text-gray-500 hover:text-gray-800 transition-colors">
         <Menu size={22} />
       </button>
 
-      {/* Search */}
       <div className="relative flex-1 max-w-xl">
         <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
@@ -67,33 +52,21 @@ export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
         />
       </div>
 
-      {/* Right side */}
       <div className="flex items-center gap-2 ml-auto">
         <div className="relative">
           <button
-            onClick={() => {
-              setShowNotifications((prev) => !prev)
-              setShowSchedule(false)
-              setShowProfile(false)
-            }}
+            onClick={() => { setShowNotifications((p) => !p); setShowSchedule(false); setShowProfile(false) }}
             className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-brand-bg text-gray-500 hover:text-brand-orange transition-colors relative"
-            aria-label="Notifications"
           >
-          <Bell size={19} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-orange rounded-full" />
+            <Bell size={19} />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-orange rounded-full" />
           </button>
           {showNotifications && (
             <div className="absolute right-0 mt-3 w-72 bg-white border border-brand-border rounded-2xl shadow-xl p-4 z-20">
               <p className="text-xs font-semibold text-brand-navy font-dm-sans mb-3">Notifications</p>
               <div className="space-y-2">
-                {[
-                  'New quiz scores are available for Module 3.',
-                  '3 students requested help on DSA basics.',
-                  'Your next live session starts in 2 hours.',
-                ].map((note) => (
-                  <div key={note} className="text-xs text-brand-muted font-dm-sans bg-brand-bg rounded-xl p-3">
-                    {note}
-                  </div>
+                {['New quiz scores are available for Module 3.', '3 students requested help on DSA basics.', 'Your next live session starts in 2 hours.'].map((note) => (
+                  <div key={note} className="text-xs text-brand-muted font-dm-sans bg-brand-bg rounded-xl p-3">{note}</div>
                 ))}
               </div>
             </div>
@@ -102,13 +75,8 @@ export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
 
         <div className="relative">
           <button
-            onClick={() => {
-              setShowSchedule((prev) => !prev)
-              setShowNotifications(false)
-              setShowProfile(false)
-            }}
+            onClick={() => { setShowSchedule((p) => !p); setShowNotifications(false); setShowProfile(false) }}
             className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-brand-bg text-gray-500 hover:text-brand-orange transition-colors"
-            aria-label="Calendar"
           >
             <Calendar size={19} />
           </button>
@@ -116,21 +84,13 @@ export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
             <div className="absolute right-0 mt-3 w-72 bg-white border border-brand-border rounded-2xl shadow-xl p-4 z-20">
               <p className="text-xs font-semibold text-brand-navy font-dm-sans mb-3">Today&apos;s Sessions</p>
               <div className="space-y-2">
-                {[
-                  { title: 'Live Q&A: Data Structures', time: '3:00 PM' },
-                  { title: 'Office Hours: SQL Joins', time: '6:30 PM' },
-                ].map((event) => (
+                {[{ title: 'Live Q&A: Data Structures', time: '3:00 PM' }, { title: 'Office Hours: SQL Joins', time: '6:30 PM' }].map((event) => (
                   <div key={event.title} className="flex items-center justify-between bg-brand-bg rounded-xl px-3 py-2">
                     <div>
                       <p className="text-xs font-semibold text-brand-navy font-dm-sans">{event.title}</p>
                       <p className="text-[10px] text-brand-muted font-dm-sans">{event.time}</p>
                     </div>
-                    <button
-                      onClick={() => showToast(`Opening ${event.title}`, 'info')}
-                      className="text-[10px] font-semibold text-brand-orange hover:text-brand-orange-dark"
-                    >
-                      Join
-                    </button>
+                    <button onClick={() => showToast(`Opening ${event.title}`, 'info')} className="text-[10px] font-semibold text-brand-orange hover:text-brand-orange-dark">Join</button>
                   </div>
                 ))}
               </div>
@@ -140,24 +100,13 @@ export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
 
         <div className="relative">
           <button
-            onClick={() => {
-              setShowProfile((prev) => !prev)
-              setShowNotifications(false)
-              setShowSchedule(false)
-            }}
+            onClick={() => { setShowProfile((p) => !p); setShowNotifications(false); setShowSchedule(false) }}
             className="w-9 h-9 rounded-full border-2 border-brand-orange/30 hover:border-brand-orange transition-colors overflow-hidden"
-            aria-label="Profile"
           >
-            {currentUser.avatar_url ? (
-              <img
-                src={currentUser.avatar_url}
-                alt={displayName}
-                className="w-full h-full object-cover"
-              />
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full bg-brand-orange/15 text-brand-orange text-xs font-semibold flex items-center justify-center">
-                {initials}
-              </div>
+              <div className="w-full h-full bg-brand-orange/15 text-brand-orange text-xs font-semibold flex items-center justify-center">{initials}</div>
             )}
           </button>
           {showProfile && (
@@ -167,18 +116,8 @@ export default function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
                 <p className="text-[10px] text-brand-muted font-dm-sans">{displayEmail}</p>
               </div>
               <div className="mt-2 space-y-1">
-                <button
-                  onClick={() => router.push('/settings')}
-                  className="w-full text-left text-xs font-semibold text-brand-navy font-dm-sans px-2 py-2 rounded-lg hover:bg-brand-bg"
-                >
-                  Settings
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left text-xs font-semibold text-red-600 font-dm-sans px-2 py-2 rounded-lg hover:bg-red-50"
-                >
-                  Log out
-                </button>
+                <button onClick={() => router.push('/settings')} className="w-full text-left text-xs font-semibold text-brand-navy font-dm-sans px-2 py-2 rounded-lg hover:bg-brand-bg">Settings</button>
+                <button onClick={handleLogout} className="w-full text-left text-xs font-semibold text-red-600 font-dm-sans px-2 py-2 rounded-lg hover:bg-red-50">Log out</button>
               </div>
             </div>
           )}

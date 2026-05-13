@@ -2,17 +2,19 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase/client'
 
 export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('autocamp_auth')
-    if (isLoggedIn) {
-      router.replace('/dashboard')
-    } else {
-      router.replace('/login')
-    }
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        router.replace('/dashboard')
+      } else {
+        router.replace('/login')
+      }
+    })
   }, [router])
 
   return (
@@ -24,4 +26,3 @@ export default function Home() {
     </div>
   )
 }
-

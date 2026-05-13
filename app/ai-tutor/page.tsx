@@ -4,10 +4,11 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bot, Send, Plus, MessageSquare, Sparkles, User, Copy, ThumbsUp,
-  ThumbsDown, RefreshCw, ChevronRight, Zap, Mic, Square, Play,
+  ThumbsDown, RefreshCw, ChevronRight, Zap, Mic, Square, Play, Users,
 } from 'lucide-react'
 import AppShell from '@/components/AppShell'
 import { currentUser } from '@/lib/mockData'
+import { getUsername } from '@/lib/auth'
 import { useToast } from '@/components/Toast'
 import clsx from 'clsx'
 
@@ -133,11 +134,12 @@ function getResponse(input: string): string {
 
 export default function AiTutorPage() {
   const { showToast } = useToast()
+  const [displayName, setDisplayName] = useState(currentUser.full_name)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '0',
       role: 'assistant',
-      content: `Hey ${currentUser.full_name.split(' ')[0]}! 👋 I'm **atombot**, your personal AI tutor from atomcamp.\n\nI specialize in **Data Science, Machine Learning, Python, SQL, and AI**. I know you're currently working on your Data Analytics bootcamp — so I've got all the context you need!\n\nWhat would you like to explore today?`,
+      content: `Hey ${currentUser.full_name.split(' ')[0]}! 👋 I'm **Autobot**, your personal AI tutor from atomcamp.\n\nI specialize in **Data Science, Machine Learning, Python, SQL, and AI**. I know you're currently working on your Data Analytics bootcamp — so I've got all the context you need!\n\nWhat would you like to explore today?`,
       timestamp: new Date(),
     },
   ])
@@ -166,10 +168,38 @@ export default function AiTutorPage() {
     incorrect: string[]
     note?: string
   } | null>(null)
+  const [peerOpen, setPeerOpen] = useState(false)
+  const [peerNeed, setPeerNeed] = useState('')
+  const [peerOffer, setPeerOffer] = useState('')
+  const [peerLoading, setPeerLoading] = useState(false)
+  const [peerError, setPeerError] = useState('')
+  const [peerCredits, setPeerCredits] = useState(12)
+  const [peerMatches, setPeerMatches] = useState<Array<{
+    name: string
+    topic: string
+    strength: string
+    summary: string
+  }>>([])
 
   useEffect(() => {
+    const updateName = () => setDisplayName(getUsername() ?? currentUser.full_name)
+    updateName()
+    window.addEventListener('autocamp-username', updateName)
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    return () => window.removeEventListener('autocamp-username', updateName)
   }, [messages])
+
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 0 || prev[0]?.role !== 'assistant') return prev
+      const updated = [...prev]
+      updated[0] = {
+        ...updated[0],
+        content: `Hey ${displayName.split(' ')[0]}! 👋 I'm **Autobot**, your personal AI tutor from atomcamp.\n\nI specialize in **Data Science, Machine Learning, Python, SQL, and AI**. I know you're currently working on your Data Analytics bootcamp — so I've got all the context you need!\n\nWhat would you like to explore today?`,
+      }
+      return updated
+    })
+  }, [displayName])
 
   useEffect(() => {
     return () => {
@@ -388,6 +418,41 @@ export default function AiTutorPage() {
     }
   }
 
+  async function matchPeers() {
+    if (peerLoading) return
+    if (!peerNeed.trim() && !peerOffer.trim()) {
+      setPeerError('Share what you need help with or what you can teach.')
+      return
+    }
+
+    setPeerError('')
+    setPeerLoading(true)
+
+    try {
+      const response = await fetch('/api/peer-debt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ need: peerNeed.trim(), offer: peerOffer.trim() }),
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload?.error || 'Matching failed.')
+      }
+
+      const data = await response.json()
+      setPeerMatches(Array.isArray(data.matches) ? data.matches : [])
+      if (typeof data.credits === 'number') setPeerCredits(data.credits)
+      showToast('Matches ready!', 'success')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Something went wrong.'
+      setPeerError(message)
+      showToast(message, 'error')
+    } finally {
+      setPeerLoading(false)
+    }
+  }
+
   function newChat() {
     setMessages([{
       id: '0',
@@ -400,13 +465,18 @@ export default function AiTutorPage() {
 
   return (
     <AppShell>
-      <div className="flex h-[calc(100vh-64px)]">
+      <div className="relative flex min-h-[calc(100vh-64px)] pt-6 pb-6 px-4 lg:px-6">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-16 -left-10 h-72 w-72 rounded-full bg-brand-orange/15 blur-3xl" />
+          <div className="absolute top-28 right-10 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl" />
+          <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-sky-200/40 blur-3xl" />
+        </div>
         {/* Left panel — history */}
-        <aside className="hidden lg:flex flex-col w-[240px] bg-brand-navy border-r border-white/5 flex-shrink-0">
+        <aside className="hidden lg:flex flex-col w-[240px] bg-brand-navy/95 border border-white/10 rounded-2xl shadow-[0_20px_60px_rgba(1,10,19,0.35)] flex-shrink-0 relative">
           <div className="p-4">
             <button
               onClick={newChat}
-              className="w-full flex items-center justify-center gap-2 bg-brand-orange text-white py-2.5 rounded-xl text-sm font-semibold font-dm-sans hover:bg-brand-orange-dark transition"
+              className="w-full flex items-center justify-center gap-2 bg-brand-orange text-white py-2.5 rounded-xl text-sm font-semibold font-dm-sans hover:bg-brand-orange-dark transition shadow-[0_12px_24px_rgba(7,120,55,0.35)]"
             >
               <Plus size={16} /> New Chat
             </button>
@@ -448,27 +518,104 @@ export default function AiTutorPage() {
         </aside>
 
         {/* Chat area */}
-        <div className="flex-1 flex flex-col bg-brand-bg">
+        <div className="flex-1 flex flex-col bg-white/70 backdrop-blur-xl border border-white/60 rounded-3xl shadow-[0_30px_80px_rgba(1,10,19,0.18)] overflow-hidden relative">
           {/* Chat header */}
-          <div className="bg-white border-b border-brand-border px-6 py-3 flex items-center gap-3">
-            <div className="w-9 h-9 bg-brand-orange rounded-full flex items-center justify-center shadow-sm">
+          <div className="bg-white/80 backdrop-blur border-b border-brand-border px-6 py-4 flex items-center gap-3">
+            <div className="w-9 h-9 bg-brand-orange rounded-full flex items-center justify-center shadow-[0_12px_24px_rgba(7,120,55,0.35)]">
               <Bot size={18} className="text-white" />
             </div>
             <div>
-              <p className="font-sora text-sm font-bold text-brand-navy">atombot</p>
+              <p className="font-sora text-sm font-bold text-brand-navy">Autobot</p>
               <p className="text-xs text-brand-success font-dm-sans flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-brand-success rounded-full inline-block" />
                 Online · Data Science & AI Expert
               </p>
             </div>
+            <div className="ml-auto relative">
+              <button
+                onClick={() => setPeerOpen((prev) => !prev)}
+                className="flex items-center gap-2 bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-xs font-semibold font-dm-sans text-brand-navy hover:border-brand-orange/40 transition"
+              >
+                <Users size={14} className="text-brand-orange" />
+                Help Credits
+                <span className="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange">
+                  {peerCredits}
+                </span>
+              </button>
+
+              {peerOpen && (
+                <div className="absolute right-0 mt-3 w-[320px] bg-white border border-brand-border rounded-2xl shadow-xl p-4 z-20">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-brand-navy font-sora">Peer Debt Matching</p>
+                      <p className="text-[11px] text-brand-muted font-dm-sans mt-1">
+                        Earn credits by helping. Spend credits when you need help.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setPeerOpen(false)}
+                      className="text-[11px] font-semibold text-gray-400 hover:text-gray-600 transition"
+                    >
+                      Close
+                    </button>
+                  </div>
+
+                  <div className="mt-3 space-y-2">
+                    <textarea
+                      value={peerNeed}
+                      onChange={(e) => setPeerNeed(e.target.value)}
+                      placeholder="What do you need help with?"
+                      rows={2}
+                      className="w-full px-3 py-2 text-xs font-dm-sans bg-brand-bg border border-brand-border rounded-xl resize-none
+                                 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange/40 transition"
+                    />
+                    <textarea
+                      value={peerOffer}
+                      onChange={(e) => setPeerOffer(e.target.value)}
+                      placeholder="What can you teach?"
+                      rows={2}
+                      className="w-full px-3 py-2 text-xs font-dm-sans bg-brand-bg border border-brand-border rounded-xl resize-none
+                                 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange/40 transition"
+                    />
+                    {peerError && (
+                      <div className="text-[11px] text-brand-danger font-dm-sans">{peerError}</div>
+                    )}
+                    <button
+                      onClick={matchPeers}
+                      disabled={peerLoading}
+                      className="w-full flex items-center justify-center gap-2 bg-brand-orange text-white py-2 rounded-xl text-xs font-semibold font-dm-sans hover:bg-brand-orange-dark transition disabled:opacity-60"
+                    >
+                      {peerLoading ? <RefreshCw size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                      Match me
+                    </button>
+                  </div>
+
+                  {peerMatches.length > 0 && (
+                    <div className="mt-4 space-y-2">
+                      <p className="text-[11px] uppercase tracking-widest text-brand-muted font-dm-sans">Suggested Peers</p>
+                      {peerMatches.map((match, index) => (
+                        <div key={`${match.name}-${index}`} className="border border-brand-border rounded-xl p-2 bg-brand-bg">
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs font-semibold text-brand-navy font-dm-sans">{match.name}</p>
+                            <span className="text-[10px] text-brand-orange font-dm-sans">{match.strength}</span>
+                          </div>
+                          <p className="text-[11px] text-brand-muted font-dm-sans">{match.topic}</p>
+                          <p className="text-[11px] text-gray-600 font-dm-sans mt-1">{match.summary}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5">
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-3xl mx-auto bg-white border border-brand-border rounded-2xl p-5 shadow-sm"
+              className="max-w-3xl mx-auto bg-white/95 border border-brand-border rounded-2xl p-5 shadow-[0_18px_40px_rgba(2,8,20,0.12)]"
             >
               <div className="flex flex-col gap-4">
                 <div className="flex items-start justify-between gap-3">
@@ -533,7 +680,7 @@ export default function AiTutorPage() {
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-3xl mx-auto bg-white border border-brand-border rounded-2xl p-5 shadow-sm"
+                className="max-w-3xl mx-auto bg-white/95 border border-brand-border rounded-2xl p-5 shadow-[0_18px_40px_rgba(2,8,20,0.12)]"
               >
                 <div className="flex flex-col gap-4">
                   <div className="flex items-start justify-between gap-3">
@@ -721,14 +868,14 @@ export default function AiTutorPage() {
           </div>
 
           {/* Input bar */}
-          <div className="bg-white border-t border-brand-border p-4">
+          <div className="bg-white/90 backdrop-blur border-t border-brand-border p-4">
             <div className="max-w-3xl mx-auto flex gap-3">
               <div className="flex-1 relative">
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
-                  placeholder="Ask atombot anything… (Enter to send, Shift+Enter for newline)"
+                  placeholder="Ask Autobot anything… (Enter to send, Shift+Enter for newline)"
                   rows={1}
                   className="w-full px-4 py-3 bg-brand-bg border border-brand-border rounded-xl text-sm font-dm-sans resize-none
                              focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange/40 transition
@@ -746,7 +893,7 @@ export default function AiTutorPage() {
               </button>
             </div>
             <p className="text-center text-[10px] text-gray-300 font-dm-sans mt-2">
-              atombot is powered by Claude AI · Responses may not always be accurate · atomcamp
+              Autobot is powered by Claude AI · Responses may not always be accurate · atomcamp
             </p>
           </div>
         </div>

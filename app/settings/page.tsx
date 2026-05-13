@@ -1,19 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { User, Bell, Lock, Palette, Save } from 'lucide-react'
 import AppShell from '@/components/AppShell'
 import { currentUser } from '@/lib/mockData'
 import { useToast } from '@/components/Toast'
+import { getUsername, setUsername, getAuthEmail } from '@/lib/auth'
 
 export default function SettingsPage() {
   const { showToast } = useToast()
   const [name, setName] = useState(currentUser.full_name)
   const [email, setEmail] = useState(currentUser.email)
 
+  useEffect(() => {
+    const stored = getUsername()
+    if (stored) setName(stored)
+    const storedEmail = getAuthEmail()
+    if (storedEmail) setEmail(storedEmail)
+  }, [])
+
   function handleSave(e: React.FormEvent) {
     e.preventDefault()
+    if (name.trim()) setUsername(name)
     // TODO: PATCH /api/profile { full_name, email }
     showToast('Profile updated successfully!', 'success')
   }
@@ -33,9 +42,11 @@ export default function SettingsPage() {
               <h2 className="font-sora text-base font-bold text-brand-navy">Profile</h2>
             </div>
             <div className="flex items-center gap-5 mb-6">
-              <img src={currentUser.avatar_url} alt="Avatar" className="w-16 h-16 rounded-full object-cover border-2 border-brand-orange/30" />
+              <div className="w-16 h-16 rounded-full border-2 border-brand-orange/30 bg-brand-orange/15 text-brand-orange text-sm font-semibold flex items-center justify-center">
+                {name.trim().split(' ').filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('') || 'U'}
+              </div>
               <button type="button" onClick={() => showToast('Upload feature coming soon!', 'info')} className="text-sm text-brand-orange font-semibold font-dm-sans hover:underline">
-                Change photo
+                Add photo
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

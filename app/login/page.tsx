@@ -122,7 +122,7 @@ export default function LoginPage() {
               className="font-sora text-xl font-bold text-white"
               style={{ letterSpacing: '-0.02em' }}
             >
-              atom<span style={{ color: '#00C853' }}>learn</span>
+              auto<span style={{ color: '#00C853' }}>camp</span>
             </span>
           </div>
 
@@ -188,7 +188,7 @@ export default function LoginPage() {
             />
             <div>
               <p className="text-white/80 text-sm font-dm-sans italic leading-relaxed">
-                &ldquo;The AI Tutor path at atomlearn changed my career trajectory in just 3&nbsp;months. Highly recommended for anyone in tech.&rdquo;
+                &ldquo;The AI Tutor path at autocamp changed my career trajectory in just 3&nbsp;months. Highly recommended for anyone in tech.&rdquo;
               </p>
               <p className="text-sm font-semibold font-dm-sans mt-2" style={{ color: '#00C853' }}>
                 — David Chen, Senior AI Engineer
@@ -212,7 +212,7 @@ export default function LoginPage() {
               <Zap size={20} className="text-white fill-white" />
             </div>
             <h1 className="font-sora text-xl font-bold" style={{ color: '#010A13' }}>
-              atom<span style={{ color: '#00C853' }}>learn</span>
+              auto<span style={{ color: '#00C853' }}>camp</span>
             </h1>
           </div>
 

@@ -1,6 +1,6 @@
 // Edge Function: ai-chat
 // POST /functions/v1/ai-chat
-// Streams Claude AI responses for the atombot tutor
+// Streams Claude AI responses for the Autobot tutor
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -48,7 +48,7 @@ serve(async (req) => {
       if (mod) moduleContext = `The student is currently studying the module: "${mod.title}". ${mod.description ?? ''}`
     }
 
-    const systemPrompt = `You are atombot, atomcamp's expert AI study tutor for Data Science, Machine Learning, Python, SQL, and AI.
+    const systemPrompt = `You are Autobot, atomcamp's expert AI study tutor for Data Science, Machine Learning, Python, SQL, and AI.
 
 Student Profile:
 - Name: ${profile?.full_name ?? 'Student'}
@@ -130,3 +130,4 @@ Guidelines:
     )
   }
 })
+

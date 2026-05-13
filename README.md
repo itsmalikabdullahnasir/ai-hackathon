@@ -1,4 +1,4 @@
-# AtomLearn Adaptive LMS
+# Autocamp Adaptive LMS
 
 A modern, AI-powered Learning Management System built with a premium design system.
 
@@ -72,3 +72,4 @@ start pages/original/login.html
 | **AI Onboarding** | Smart onboarding for new users |
 | **Progress** | Detailed learning analytics |
 | **Instructor Dashboard** | Instructor-facing analytics & management |
+

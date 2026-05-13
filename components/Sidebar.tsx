@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
@@ -8,7 +8,7 @@ import {
   LogOut, Zap, ChevronRight, GraduationCap,
 } from 'lucide-react'
 import { currentUser } from '@/lib/mockData'
-import { logout } from '@/lib/auth'
+import { logout, getUsername, getAuthEmail } from '@/lib/auth'
 import { useToast } from '@/components/Toast'
 import clsx from 'clsx'
 
@@ -25,6 +25,28 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { showToast } = useToast()
+  const [displayName, setDisplayName] = useState(currentUser.full_name)
+  const [displayEmail, setDisplayEmail] = useState(currentUser.email)
+
+  useEffect(() => {
+    const updateName = () => setDisplayName(getUsername() ?? currentUser.full_name)
+    const updateEmail = () => setDisplayEmail(getAuthEmail() ?? currentUser.email)
+    updateName()
+    updateEmail()
+    window.addEventListener('autocamp-username', updateName)
+    window.addEventListener('autocamp-auth', updateEmail)
+    return () => {
+      window.removeEventListener('autocamp-username', updateName)
+      window.removeEventListener('autocamp-auth', updateEmail)
+    }
+  }, [])
+
+  const initials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('') || 'U'
 
   function handleLogout() {
     logout()
@@ -42,7 +64,7 @@ export default function Sidebar() {
           </div>
           <div>
             <h1 className="font-sora text-white text-lg font-bold leading-none">
-              atom<span className="text-brand-orange">learn</span>
+              auto<span className="text-brand-orange">camp</span>
             </h1>
             <p className="text-white/40 text-[10px] mt-0.5 font-dm-sans">by atomcamp</p>
           </div>
@@ -75,14 +97,20 @@ export default function Sidebar() {
       {/* User + Logout */}
       <div className="px-3 pb-6 border-t border-white/5 pt-3 space-y-2">
         <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/5">
-          <img
-            src={currentUser.avatar_url}
-            alt={currentUser.full_name}
-            className="w-8 h-8 rounded-full object-cover border-2 border-brand-orange/40"
-          />
+          {currentUser.avatar_url ? (
+            <img
+              src={currentUser.avatar_url}
+              alt={displayName}
+              className="w-8 h-8 rounded-full object-cover border-2 border-brand-orange/40"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full border-2 border-brand-orange/40 bg-brand-orange/15 text-brand-orange text-[10px] font-semibold flex items-center justify-center">
+              {initials}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
-            <p className="text-white text-xs font-semibold truncate font-dm-sans">{currentUser.full_name}</p>
-            <p className="text-white/40 text-[10px] truncate">{currentUser.email}</p>
+            <p className="text-white text-xs font-semibold truncate font-dm-sans">{displayName}</p>
+            <p className="text-white/40 text-[10px] truncate">{displayEmail}</p>
           </div>
           <GraduationCap size={14} className="text-brand-orange flex-shrink-0" />
         </div>

@@ -11,6 +11,7 @@ import AppShell from '@/components/AppShell'
 import { StatCardSkeleton } from '@/components/Skeleton'
 import { currentUser, insights, liveSessions, courses } from '@/lib/mockData'
 import { useToast } from '@/components/Toast'
+import { getUsername } from '@/lib/auth'
 import clsx from 'clsx'
 
 const FADE_UP = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.35 } }
@@ -19,14 +20,21 @@ export default function DashboardPage() {
   const { showToast } = useToast()
   const [loading, setLoading] = useState(true)
   const [sessionIdx, setSessionIdx] = useState(0)
+  const [displayName, setDisplayName] = useState(currentUser.full_name)
 
   const enrolledCourse = courses.find((c) => c.is_enrolled)!
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
   useEffect(() => {
+    const updateName = () => setDisplayName(getUsername() ?? currentUser.full_name)
+    updateName()
+    window.addEventListener('autocamp-username', updateName)
     // TODO: GET /api/dashboard/stats { user_id }
     const t = setTimeout(() => setLoading(false), 800)
-    return () => clearTimeout(t)
+    return () => {
+      clearTimeout(t)
+      window.removeEventListener('autocamp-username', updateName)
+    }
   }, [])
 
   const statCards = [
@@ -43,7 +51,7 @@ export default function DashboardPage() {
         <motion.section {...FADE_UP} className="mb-7 flex items-start justify-between">
           <div>
             <h2 className="font-sora text-2xl font-bold text-brand-navy">
-              Good morning, {currentUser.full_name.split(' ')[0]} 👋
+              Good morning, {displayName.split(' ')[0]} 👋
             </h2>
             <p className="text-brand-muted text-sm font-dm-sans mt-0.5">{today} &bull; You have 2 live sessions today.</p>
           </div>

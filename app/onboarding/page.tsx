@@ -99,7 +99,7 @@ export default function OnboardingPage() {
           <Zap size={18} className="text-white fill-white" />
         </div>
         <h1 className="font-sora text-white text-lg font-bold">
-          atom<span className="text-brand-orange">learn</span>
+          auto<span className="text-brand-orange">camp</span>
         </h1>
       </div>
 

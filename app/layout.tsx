@@ -7,7 +7,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <title>atomlearn by atomcamp</title>
+        <title>autocamp by atomcamp</title>
         <meta name="description" content="Smart Adaptive LMS — AI-powered learning for Data Science & AI" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link

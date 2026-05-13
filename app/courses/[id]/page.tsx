@@ -22,7 +22,7 @@ const resources = [
 ]
 
 const mockMessages = [
-  { role: 'assistant', content: 'Hi! I\'m atombot, your AI study buddy. I can help you understand concepts from this module. What would you like to explore?' },
+  { role: 'assistant', content: 'Hi! I\'m Autobot, your AI study buddy. I can help you understand concepts from this module. What would you like to explore?' },
 ]
 
 export default function CoursePage() {
@@ -31,9 +31,11 @@ export default function CoursePage() {
   const id = Array.isArray(rawId) ? rawId[0] : (rawId ?? '')
   const { showToast } = useToast()
   const course = courses.find((c) => c.id === id) ?? courses[0]
+  const initialModuleId = course.modules.find((m) => m.current)?.id ?? course.modules[0]?.id ?? ''
 
   const [tab, setTab] = useState<Tab>('overview')
   const [expandedWeek, setExpandedWeek] = useState<number>(2)
+  const [selectedModuleId, setSelectedModuleId] = useState(initialModuleId)
   const [completed, setCompleted] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [chatInput, setChatInput] = useState('')
@@ -42,7 +44,8 @@ export default function CoursePage() {
   const [quizSubmitted, setQuizSubmitted] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
-  const quiz = quizzes[0]
+  const selectedModule = course.modules.find((m) => m.id === selectedModuleId) ?? course.modules[0]
+  const quiz = quizzes.find((q) => q.module_id === selectedModule?.id)
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -64,6 +67,7 @@ export default function CoursePage() {
   }
 
   function handleQuizSubmit() {
+    if (!quiz) return
     if (Object.keys(quizAnswers).length < quiz.questions.length) {
       showToast('Please answer all questions first.', 'warning')
       return
@@ -75,6 +79,17 @@ export default function CoursePage() {
   }
 
   function resetQuiz() { setQuizAnswers({}); setQuizSubmitted(false) }
+
+  function selectModule(moduleId: string, locked?: boolean) {
+    if (locked) {
+      showToast('This lesson unlocks after you finish the previous week.', 'info')
+      return
+    }
+    setSelectedModuleId(moduleId)
+    setCompleted(false)
+    setQuizAnswers({})
+    setQuizSubmitted(false)
+  }
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'overview', label: 'Overview' },
@@ -131,35 +146,39 @@ export default function CoursePage() {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        {mods.map((m) => (
-                          <button
-                            key={m.id}
-                            className={clsx(
-                              'w-full flex items-center gap-3 px-5 py-3 text-left hover:bg-brand-bg transition border-l-2',
-                              m.current ? 'border-brand-orange bg-brand-orange/3' : 'border-transparent',
-                            )}
-                          >
-                            <div className={clsx(
-                              'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0',
-                              m.completed ? 'bg-brand-success' : m.current ? 'bg-brand-orange animate-pulse' : 'bg-gray-100',
-                            )}>
-                              {m.completed ? <CheckCircle size={13} className="text-white fill-white" />
-                                : m.current ? <Play size={10} className="text-white fill-white" />
-                                : <Lock size={10} className="text-gray-400" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className={clsx(
-                                'text-xs font-medium truncate font-dm-sans',
-                                m.current ? 'text-brand-orange' : m.locked ? 'text-gray-300' : 'text-brand-navy',
-                              )}>
-                                {m.title}
-                              </p>
-                              {!m.locked && (
-                                <p className="text-[10px] text-brand-muted mt-0.5">{m.duration} min</p>
+                        {mods.map((m) => {
+                          const isSelected = selectedModule?.id === m.id
+                          return (
+                            <button
+                              key={m.id}
+                              onClick={() => selectModule(m.id, m.locked)}
+                              className={clsx(
+                                'w-full flex items-center gap-3 px-5 py-3 text-left hover:bg-brand-bg transition border-l-2',
+                                isSelected ? 'border-brand-orange bg-brand-orange/3' : 'border-transparent',
                               )}
-                            </div>
-                          </button>
-                        ))}
+                            >
+                              <div className={clsx(
+                                'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0',
+                                m.completed ? 'bg-brand-success' : m.current ? 'bg-brand-orange animate-pulse' : 'bg-gray-100',
+                              )}>
+                                {m.completed ? <CheckCircle size={13} className="text-white fill-white" />
+                                  : m.current ? <Play size={10} className="text-white fill-white" />
+                                  : <Lock size={10} className="text-gray-400" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={clsx(
+                                  'text-xs font-medium truncate font-dm-sans',
+                                  isSelected ? 'text-brand-orange' : m.locked ? 'text-gray-300' : 'text-brand-navy',
+                                )}>
+                                  {m.title}
+                                </p>
+                                {!m.locked && (
+                                  <p className="text-[10px] text-brand-muted mt-0.5">{m.duration} min</p>
+                                )}
+                              </div>
+                            </button>
+                          )
+                        })}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -197,28 +216,23 @@ export default function CoursePage() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="flex items-start justify-between mb-6 gap-4">
                   <div>
-                    <span className="text-xs font-semibold text-brand-orange uppercase tracking-widest font-dm-sans">Week 2</span>
+                    <span className="text-xs font-semibold text-brand-orange uppercase tracking-widest font-dm-sans">Week {selectedModule?.week}</span>
                     <h1 className="font-sora text-2xl font-bold text-brand-navy mt-1">
-                      Exploratory Data Analysis
+                      {selectedModule?.title}
                     </h1>
                     <p className="text-brand-muted text-sm font-dm-sans mt-2 leading-relaxed">
-                      Learn the art of EDA — the essential first step before any ML pipeline. Master distributions, outlier detection, correlation analysis, and storytelling with data.
+                      {selectedModule?.video_concept}
                     </p>
                   </div>
                   <span className="flex-shrink-0 bg-brand-orange/10 text-brand-orange text-xs font-semibold px-3 py-1.5 rounded-lg font-dm-sans">
-                    55 min
+                    {selectedModule?.duration} min
                   </span>
                 </div>
 
                 <div className="bg-brand-bg rounded-xl border border-brand-border p-5 mb-6">
                   <h3 className="font-sora text-sm font-bold text-brand-navy mb-3">Learning Objectives</h3>
                   <ul className="space-y-2">
-                    {[
-                      'Understand the goals and workflow of EDA',
-                      'Use Pandas and Seaborn for statistical summaries',
-                      'Identify and handle missing values and outliers',
-                      'Visualize distributions and correlations effectively',
-                    ].map((obj, i) => (
+                    {(selectedModule?.objectives ?? []).map((obj, i) => (
                       <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700 font-dm-sans">
                         <CheckCircle size={15} className="text-brand-success mt-0.5 flex-shrink-0" />
                         {obj}
@@ -253,31 +267,32 @@ export default function CoursePage() {
             {tab === 'video' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="aspect-video bg-brand-navy rounded-xl overflow-hidden flex items-center justify-center mb-6 relative">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-brand-orange rounded-full flex items-center justify-center mx-auto mb-3 cursor-pointer hover:scale-105 transition-transform shadow-lg">
-                      <Play size={28} className="text-white fill-white ml-1" />
+                  {selectedModule?.video_url ? (
+                    <iframe
+                      key={selectedModule.id}
+                      className="w-full h-full"
+                      src={`${selectedModule.video_url}?rel=0&modestbranding=1`}
+                      title={selectedModule.video_title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-brand-orange rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <Play size={28} className="text-white fill-white ml-1" />
+                      </div>
+                      <p className="text-white/60 text-sm font-dm-sans">Video coming soon</p>
                     </div>
-                    <p className="text-white/60 text-sm font-dm-sans">Click to play</p>
-                    <p className="text-white/40 text-xs mt-1 font-dm-sans">EDA Fundamentals · 55 min</p>
-                  </div>
-                  {/* TODO: Replace with actual video player using video_url from module */}
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                    <div className="h-1 bg-white/20 rounded-full">
-                      <div className="h-full w-[30%] bg-brand-orange rounded-full" />
-                    </div>
-                    <div className="flex justify-between text-white/60 text-xs mt-1.5 font-dm-sans">
-                      <span>16:30</span><span>55:00</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="bg-white rounded-xl border border-brand-border p-5">
-                  <h3 className="font-sora text-sm font-bold text-brand-navy mb-3">Transcript</h3>
+                  <h3 className="font-sora text-sm font-bold text-brand-navy mb-1">Transcript</h3>
+                  <p className="text-xs text-brand-muted font-dm-sans mb-3">{selectedModule?.video_title} · {selectedModule?.duration} min</p>
                   <div className="space-y-3 text-sm text-gray-700 font-dm-sans leading-relaxed max-h-48 overflow-y-auto pr-2">
-                    <p><span className="text-brand-orange font-semibold">[00:00]</span> Welcome to the Exploratory Data Analysis module. Today we're going to cover the essential techniques…</p>
-                    <p><span className="text-brand-orange font-semibold">[02:15]</span> Before building any model, we need to deeply understand our data. EDA helps us find patterns, anomalies…</p>
-                    <p><span className="text-brand-orange font-semibold">[05:42]</span> Let's start with the describe() function in Pandas, which gives us count, mean, std, min, and quartiles…</p>
-                    <p><span className="text-brand-orange font-semibold">[10:18]</span> Now let's talk about handling missing values. We have several strategies: drop, impute, or predict…</p>
+                    {(selectedModule?.transcript ?? []).map((line) => (
+                      <p key={line.time}><span className="text-brand-orange font-semibold">[{line.time}]</span> {line.text}</p>
+                    ))}
                   </div>
                 </div>
               </motion.div>
@@ -286,53 +301,62 @@ export default function CoursePage() {
             {/* Quiz */}
             {tab === 'quiz' && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-                <div>
-                  <h2 className="font-sora text-xl font-bold text-brand-navy">{quiz.title}</h2>
-                  <p className="text-brand-muted text-sm font-dm-sans mt-1">{quiz.questions.length} questions · Submit when ready</p>
-                </div>
-
-                {quizSubmitted ? (
-                  <QuizResult
-                    questions={quiz.questions}
-                    answers={quizAnswers}
-                    onReset={resetQuiz}
-                  />
-                ) : (
+                {quiz ? (
                   <>
-                    {quiz.questions.map((q, qi) => (
-                      <div key={q.id} className="bg-white rounded-xl border border-brand-border p-5">
-                        <p className="font-dm-sans text-sm font-semibold text-brand-navy mb-4">
-                          <span className="text-brand-orange mr-2">Q{qi + 1}.</span>{q.body}
-                        </p>
-                        <div className="space-y-2.5">
-                          {q.options.map((opt, oi) => (
-                            <button
-                              key={oi}
-                              onClick={() => setQuizAnswers((a) => ({ ...a, [q.id]: oi }))}
-                              className={clsx(
-                                'w-full text-left px-4 py-3 rounded-xl border-2 text-sm font-dm-sans transition-all',
-                                quizAnswers[q.id] === oi
-                                  ? 'border-brand-orange bg-brand-orange/5 text-brand-orange font-medium'
-                                  : 'border-brand-border hover:border-brand-orange/40 text-gray-700',
-                              )}
-                            >
-                              <span className="w-5 h-5 rounded-full border-2 inline-flex items-center justify-center mr-2.5 flex-shrink-0
-                                             text-[10px] font-bold border-current">
-                                {String.fromCharCode(65 + oi)}
-                              </span>
-                              {opt}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                    <button
-                      onClick={handleQuizSubmit}
-                      className="w-full bg-brand-orange text-white py-3.5 rounded-xl font-semibold font-dm-sans text-sm hover:bg-brand-orange-dark transition"
-                    >
-                      Submit Quiz →
-                    </button>
+                    <div>
+                      <h2 className="font-sora text-xl font-bold text-brand-navy">{quiz.title}</h2>
+                      <p className="text-brand-muted text-sm font-dm-sans mt-1">{quiz.questions.length} questions · Submit when ready</p>
+                    </div>
+
+                    {quizSubmitted ? (
+                      <QuizResult
+                        questions={quiz.questions}
+                        answers={quizAnswers}
+                        onReset={resetQuiz}
+                      />
+                    ) : (
+                      <>
+                        {quiz.questions.map((q, qi) => (
+                          <div key={q.id} className="bg-white rounded-xl border border-brand-border p-5">
+                            <p className="font-dm-sans text-sm font-semibold text-brand-navy mb-4">
+                              <span className="text-brand-orange mr-2">Q{qi + 1}.</span>{q.body}
+                            </p>
+                            <div className="space-y-2.5">
+                              {q.options.map((opt, oi) => (
+                                <button
+                                  key={oi}
+                                  onClick={() => setQuizAnswers((a) => ({ ...a, [q.id]: oi }))}
+                                  className={clsx(
+                                    'w-full text-left px-4 py-3 rounded-xl border-2 text-sm font-dm-sans transition-all',
+                                    quizAnswers[q.id] === oi
+                                      ? 'border-brand-orange bg-brand-orange/5 text-brand-orange font-medium'
+                                      : 'border-brand-border hover:border-brand-orange/40 text-gray-700',
+                                  )}
+                                >
+                                  <span className="w-5 h-5 rounded-full border-2 inline-flex items-center justify-center mr-2.5 flex-shrink-0 text-[10px] font-bold border-current">
+                                    {String.fromCharCode(65 + oi)}
+                                  </span>
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          onClick={handleQuizSubmit}
+                          className="w-full bg-brand-orange text-white py-3.5 rounded-xl font-semibold font-dm-sans text-sm hover:bg-brand-orange-dark transition"
+                        >
+                          Submit Quiz →
+                        </button>
+                      </>
+                    )}
                   </>
+                ) : (
+                  <div className="text-center py-12 bg-white rounded-xl border border-brand-border">
+                    <HelpCircle size={40} className="mx-auto text-gray-200 mb-3" />
+                    <h2 className="font-sora text-lg font-bold text-brand-navy">Quiz coming soon</h2>
+                    <p className="text-brand-muted text-sm font-dm-sans mt-1">This lesson has a video and transcript ready.</p>
+                  </div>
                 )}
               </motion.div>
             )}
@@ -403,7 +427,7 @@ export default function CoursePage() {
                     <Bot size={16} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white text-xs font-bold font-dm-sans">atombot</p>
+                    <p className="text-white text-xs font-bold font-dm-sans">Autobot</p>
                     <p className="text-white/40 text-[10px]">AI Study Buddy · always on</p>
                   </div>
                 </div>
@@ -432,7 +456,7 @@ export default function CoursePage() {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder="Ask atombot anything…"
+                  placeholder="Ask Autobot anything…"
                   className="flex-1 text-xs px-3 py-2 bg-brand-bg border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-orange/30 font-dm-sans"
                 />
                 <button

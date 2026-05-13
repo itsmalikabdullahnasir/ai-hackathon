@@ -1,0 +1,43 @@
+-- ============================================================
+-- atomlearn by atomcamp — COMPLETE SUPABASE SETUP
+-- ============================================================
+-- 
+-- Run these SQL files in Supabase SQL Editor in this EXACT order:
+--
+-- STEP 1: schema.sql      — Creates all tables, enums, triggers
+-- STEP 2: rls-policies.sql — Enables Row Level Security policies
+-- STEP 3: storage-config.sql — Sets up storage buckets
+-- STEP 4: seed.sql         — Inserts demo/test data
+--
+-- ============================================================
+-- IMPORTANT NOTES:
+-- ============================================================
+--
+-- 1. The schema.sql creates a trigger `trg_on_auth_user_created` that
+--    AUTOMATICALLY creates a profile row when a user signs up via 
+--    supabase.auth.signUp(). The profile is populated from the
+--    raw_user_meta_data (full_name, avatar_url).
+--
+-- 2. Before running seed.sql, make sure schema.sql has been run 
+--    successfully. The seed.sql inserts into auth.users which will
+--    trigger the profile creation automatically.
+--
+-- 3. If you get errors about existing types/tables, the schema 
+--    already exists. You can add IF NOT EXISTS or drop first.
+--
+-- 4. DISABLE EMAIL CONFIRMATION in Supabase Dashboard:
+--    Go to Authentication → Providers → Email → 
+--    Turn OFF "Confirm email" toggle
+--    This allows immediate login after signup without email verification.
+--
+-- ============================================================
+-- QUICK REFERENCE: Demo Accounts (after running seed.sql)
+-- ============================================================
+--
+-- Student:    ahmed@atomcamp.com / Password123!
+-- Instructor: ayesha.khan@atomcamp.com / Password123!
+-- Instructor: omar.farooq@atomcamp.com / Password123!
+-- Instructor: usman.tariq@atomcamp.com / Password123!
+-- Admin:      admin@atomcamp.com / Password123!
+--
+-- ============================================================

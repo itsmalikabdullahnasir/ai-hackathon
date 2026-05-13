@@ -31,7 +31,7 @@ Instructor workflows include cohort analytics, at-risk learner detection, AI-gen
 Add your project demonstration video here:
 
 ```text
-Demo video link: https://your-demo-video-link.com
+in the submission of GCR , the video is in .rar file uploaded with project 
 ```
 
 You can also replace this placeholder with a clickable thumbnail:

@@ -5,23 +5,19 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff, Zap, CheckCircle, Briefcase, Building2, AlertCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
-import { apiFetch } from '@/lib/api'
 import { useToast } from '@/components/Toast'
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter()
   const { showToast } = useToast()
+  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
-  const [remember, setRemember] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [showReset, setShowReset] = useState(false)
-  const [resetEmail, setResetEmail] = useState('')
-  const [resetLoading, setResetLoading] = useState(false)
-  const [resetError, setResetError] = useState('')
-  const [resetSent, setResetSent] = useState(false)
+  const [success, setSuccess] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -29,46 +25,33 @@ export default function LoginPage() {
     })
   }, [router])
 
-  function openReset() {
-    setShowReset(true)
-    setResetError('')
-    setResetSent(false)
-    setResetEmail((prev) => prev || email)
-  }
-
-  async function handleResetPassword() {
-    setResetError('')
-    setResetSent(false)
-
-    if (!resetEmail) {
-      setResetError('Please enter your email address.')
-      return
-    }
-
-    setResetLoading(true)
-    const { error: resetErr } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    })
-
-    if (resetErr) {
-      setResetError(resetErr.message)
-      setResetLoading(false)
-      return
-    }
-
-    setResetSent(true)
-    setResetLoading(false)
-    showToast('Password reset email sent.', 'success')
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    if (!email || !password) { setError('Please fill in all fields.'); return }
-    if (password.length < 6) { setError('Password must be at least 6 characters.'); return }
+    setSuccess('')
+
+    if (!fullName || !email || !password || !confirmPassword) {
+      setError('Please fill in all fields.')
+      return
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.')
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
 
     setLoading(true)
-    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName.trim() },
+        emailRedirectTo: `${window.location.origin}/onboarding`,
+      },
+    })
 
     if (authError) {
       setError(authError.message)
@@ -77,15 +60,13 @@ export default function LoginPage() {
     }
 
     if (data.session) {
-      try {
-        const profile = await apiFetch<{ onboarding_completed: boolean }>('/api/me')
-        showToast('Welcome back to atomcamp!', 'success')
-        router.push(profile.onboarding_completed ? '/dashboard' : '/onboarding')
-      } catch {
-        showToast('Welcome back to atomcamp!', 'success')
-        router.push('/onboarding')
-      }
+      showToast('Account created! Let\'s build your learning path.', 'success')
+      router.push('/onboarding')
+    } else {
+      setSuccess('Check your email to confirm your account, then come back to continue.')
+      showToast('Check your email to confirm your account.', 'info')
     }
+
     setLoading(false)
   }
 
@@ -93,7 +74,7 @@ export default function LoginPage() {
     setLoading(true)
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/dashboard` },
+      options: { redirectTo: `${window.location.origin}/onboarding` },
     })
     if (authError) {
       setError(authError.message)
@@ -154,7 +135,7 @@ export default function LoginPage() {
             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Alumni" className="w-12 h-12 rounded-full object-cover flex-shrink-0" style={{ border: '2px solid #00C853' }} />
             <div>
               <p className="text-white/80 text-sm font-dm-sans italic leading-relaxed">&ldquo;The AI Tutor path at autocamp changed my career trajectory in just 3&nbsp;months. Highly recommended for anyone in tech.&rdquo;</p>
-              <p className="text-sm font-semibold font-dm-sans mt-2" style={{ color: '#00C853' }}>— David Chen, Senior AI Engineer</p>
+              <p className="text-sm font-semibold font-dm-sans mt-2" style={{ color: '#00C853' }}>- David Chen, Senior AI Engineer</p>
             </div>
           </motion.div>
         </div>
@@ -171,8 +152,8 @@ export default function LoginPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="font-sora text-2xl font-bold mb-1" style={{ color: '#010A13' }}>Welcome back</h2>
-            <p className="text-sm font-dm-sans" style={{ color: '#64748B' }}>Please enter your details to sign in to your account.</p>
+            <h2 className="font-sora text-2xl font-bold mb-1" style={{ color: '#010A13' }}>Create your account</h2>
+            <p className="text-sm font-dm-sans" style={{ color: '#64748B' }}>Start your AI learning journey in minutes.</p>
           </div>
 
           <div className="rounded-2xl p-7" style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', boxShadow: '0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05)' }}>
@@ -183,6 +164,22 @@ export default function LoginPage() {
                   <p className="text-sm text-red-700 font-dm-sans">{error}</p>
                 </div>
               )}
+              {success && (
+                <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: '#ECFDF5', border: '1px solid #A7F3D0' }}>
+                  <CheckCircle size={16} className="text-emerald-600 flex-shrink-0" />
+                  <p className="text-sm text-emerald-700 font-dm-sans">{success}</p>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label htmlFor="fullName" className="block text-sm font-medium font-dm-sans" style={{ color: '#374151' }}>Full name</label>
+                <input id="fullName" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name"
+                  className="w-full px-4 py-3 rounded-xl text-sm font-dm-sans outline-none transition-all"
+                  style={{ background: '#F8F9FB', border: '1px solid #E2E8F0' }}
+                  onFocus={(e) => { e.target.style.border = '1px solid #077837'; e.target.style.boxShadow = '0 0 0 3px rgba(7,120,55,0.12)' }}
+                  onBlur={(e) => { e.target.style.border = '1px solid #E2E8F0'; e.target.style.boxShadow = 'none' }}
+                />
+              </div>
 
               <div className="space-y-1.5">
                 <label htmlFor="email" className="block text-sm font-medium font-dm-sans" style={{ color: '#374151' }}>Email address</label>
@@ -198,10 +195,7 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-1.5">
-                <div className="flex justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium font-dm-sans" style={{ color: '#374151' }}>Password</label>
-                  <button type="button" onClick={openReset} className="text-xs font-dm-sans font-semibold hover:underline" style={{ color: '#00C853' }}>Forgot password?</button>
-                </div>
+                <label htmlFor="password" className="block text-sm font-medium font-dm-sans" style={{ color: '#374151' }}>Password</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: '#9CA3AF' }} />
                   <input id="password" type={showPass ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••"
@@ -216,49 +210,18 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {showReset && (
-                <div className="rounded-xl p-4 space-y-3" style={{ background: '#F8F9FB', border: '1px solid #E2E8F0' }}>
-                  <p className="text-xs font-dm-sans" style={{ color: '#6B7280' }}>We will email a secure link to reset your password.</p>
-                  <div className="space-y-1.5">
-                    <label htmlFor="resetEmail" className="block text-sm font-medium font-dm-sans" style={{ color: '#374151' }}>Reset email</label>
-                    <div className="relative">
-                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: '#9CA3AF' }} />
-                      <input id="resetEmail" type="email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} placeholder="name@company.com"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl text-sm font-dm-sans outline-none transition-all"
-                        style={{ background: '#FFFFFF', border: '1px solid #E2E8F0' }}
-                        onFocus={(e) => { e.target.style.border = '1px solid #077837'; e.target.style.boxShadow = '0 0 0 3px rgba(7,120,55,0.12)' }}
-                        onBlur={(e) => { e.target.style.border = '1px solid #E2E8F0'; e.target.style.boxShadow = 'none' }}
-                      />
-                    </div>
-                  </div>
-
-                  {resetError && (
-                    <div className="flex items-center gap-2 text-xs font-dm-sans" style={{ color: '#B91C1C' }}>
-                      <AlertCircle size={14} className="text-red-500" />
-                      <span>{resetError}</span>
-                    </div>
-                  )}
-
-                  {resetSent && (
-                    <div className="flex items-center gap-2 text-xs font-dm-sans" style={{ color: '#065F46' }}>
-                      <CheckCircle size={14} className="text-emerald-600" />
-                      <span>Check your email for the reset link.</span>
-                    </div>
-                  )}
-
-                  <button type="button" onClick={handleResetPassword} disabled={resetLoading}
-                    className="w-full py-2.5 rounded-lg font-semibold font-dm-sans text-xs text-white transition-all active:scale-[0.98] disabled:opacity-60"
-                    style={{ background: resetLoading ? '#065F46' : '#077837' }}
-                  >
-                    {resetLoading ? 'Sending...' : 'Send reset link'}
-                  </button>
+              <div className="space-y-1.5">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium font-dm-sans" style={{ color: '#374151' }}>Confirm password</label>
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: '#9CA3AF' }} />
+                  <input id="confirmPassword" type={showPass ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl text-sm font-dm-sans outline-none transition-all"
+                    style={{ background: '#F8F9FB', border: '1px solid #E2E8F0' }}
+                    onFocus={(e) => { e.target.style.border = '1px solid #077837'; e.target.style.boxShadow = '0 0 0 3px rgba(7,120,55,0.12)' }}
+                    onBlur={(e) => { e.target.style.border = '1px solid #E2E8F0'; e.target.style.boxShadow = 'none' }}
+                  />
                 </div>
-              )}
-
-              <label className="flex items-center gap-2.5 cursor-pointer">
-                <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="w-4 h-4 rounded" style={{ accentColor: '#077837' }} />
-                <span className="text-sm font-dm-sans" style={{ color: '#6B7280' }}>Remember me for 30 days</span>
-              </label>
+              </div>
 
               <button type="submit" disabled={loading}
                 className="w-full py-3 rounded-xl font-semibold font-dm-sans text-sm text-white transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
@@ -266,7 +229,7 @@ export default function LoginPage() {
                 onMouseEnter={(e) => { if (!loading) (e.target as HTMLButtonElement).style.background = '#065F46' }}
                 onMouseLeave={(e) => { if (!loading) (e.target as HTMLButtonElement).style.background = '#077837' }}
               >
-                {loading ? (<><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Signing in…</>) : 'Sign in'}
+                {loading ? (<><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Creating account...</>) : 'Create account'}
               </button>
             </form>
 
@@ -287,13 +250,13 @@ export default function LoginPage() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
               </svg>
-              Sign in with Google
+              Continue with Google
             </button>
           </div>
 
           <p className="mt-6 text-center text-sm font-dm-sans" style={{ color: '#6B7280' }}>
-            Don&apos;t have an account?{' '}
-            <a href="/signup" className="font-bold hover:underline" style={{ color: '#00C853' }}>Get started</a>
+            Already have an account?{' '}
+            <a href="/login" className="font-bold hover:underline" style={{ color: '#00C853' }}>Sign in</a>
           </p>
         </motion.div>
       </main>
